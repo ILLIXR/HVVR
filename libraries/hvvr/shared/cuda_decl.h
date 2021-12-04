@@ -8,7 +8,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include <host_defines.h>
+//#include <host_defines.h>
+// host_defines.h is deprecated and replaced by cuda_runtime.h
 
 #if defined(__CUDA_ARCH__)
 // we're compiling for the GPU target

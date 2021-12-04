@@ -20,4 +20,7 @@ target_sources(shared
         vector_math.h
         )
 
-target_include_directories(shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/)
+target_include_directories(shared PUBLIC
+        "${CMAKE_CURRENT_SOURCE_DIR}/"
+        "${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}"
+        )

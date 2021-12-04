@@ -13,6 +13,8 @@
 
 #ifdef _WIN32
 # include <Windows.h>
+#else
+#include <cstdlib>
 #endif
 
 namespace hvvr {

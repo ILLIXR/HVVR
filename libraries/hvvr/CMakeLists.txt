@@ -1,2 +1,1 @@
-add_subdirectory(shared)
-add_subdirectory(raycaster)
+add_subdirectory(raycaster_cmake)

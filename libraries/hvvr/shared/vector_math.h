@@ -14,9 +14,9 @@
 // CUDA vector types
 #include <vector_types.h>
 #if CUDA_COMPILE
-#include <cuda_fp16.h>
-#include <vector_functions.h>
+#include <cuda_fp1CUDA_COMPILE6.h>
 #endif
+#include <vector_functions.h>
 
 #include <math.h>
 #include <stdint.h>
