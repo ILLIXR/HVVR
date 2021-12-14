@@ -11,6 +11,7 @@
 #include "debug.h"
 #include "util.h"
 #include "vector_math.h"
+#include "linux_support.h"
 
 #include <string.h>
 #include <string>

@@ -14,6 +14,7 @@
 #include "sort.h"
 #include "tile_data.h"
 #include "warp_ops.h"
+#include "linux_support.h"
 
 #define PROFILE_INTERSECT 0
 

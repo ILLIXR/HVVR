@@ -8,7 +8,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-//#include <host_defines.h>
+#include <cuda_runtime.h>
 // host_defines.h is deprecated and replaced by cuda_runtime.h
 
 #if defined(__CUDA_ARCH__)

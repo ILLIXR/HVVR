@@ -13,8 +13,11 @@
 #include <stdint.h>
 #include <string.h>
 
+
 #ifdef _MSC_VER
 # include <intrin.h>
+#else
+#include <x86intrin.h>
 #endif
 
 namespace hvvr {
@@ -34,7 +37,12 @@ inline uint8_t _bittest(const uint32_t* Base, uint32_t Offset) {
 }
 
 inline uint8_t _BitScanForward(uint32_t* Index, uint32_t Mask) {
+#if _WIN32
     return ::_BitScanForward((unsigned long*)Index, (unsigned long)Mask);
+#else
+
+#endif
+*/
 }
 
 inline uint32_t tzcnt(uint32_t mask) {

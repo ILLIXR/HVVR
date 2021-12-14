@@ -14,7 +14,6 @@
 #include "texture.h"
 #include "thread_pool.h"
 
-
 namespace hvvr {
 
 // set FTZ and DAZ to prevent (slow) denormals

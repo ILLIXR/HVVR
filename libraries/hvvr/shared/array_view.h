@@ -30,7 +30,7 @@ public:
     typedef typename std::remove_const<T>::type mutable_value_type;
 
     ArrayView() : _data(nullptr), _size(0) {}
-    ArrayView(T* ptr, size_t n) : _data(ptr), _size(n) {}
+    ArrayView(T* ptr, std::size_t n) : _data(ptr), _size(n) {}
 
     // Implicit constructors from array-like objects.
     ArrayView(const std::vector<mutable_value_type>& v) : _data(v.data()), _size(v.size()) {}
@@ -42,10 +42,10 @@ public:
     ArrayView(T const(&v)[N]) : _data(v), _size(N) {}
 
     // Accessors, named for compatibility with std::vector and std::array
-    const T& operator[](size_t i) const {
+    const T& operator[](std::size_t i) const {
         return _data[i];
     }
-    T& operator[](size_t i) {
+    T& operator[](std::size_t i) {
         return _data[i];
     }
     T* begin() const {
@@ -63,7 +63,7 @@ public:
     T* data() const {
         return _data;
     }
-    size_t size() const {
+    std::size_t size() const {
         return _size;
     }
 
@@ -73,7 +73,7 @@ public:
     }
 
     // Return a subrange of this ArrayView, clamped to stay in range.
-    ArrayView<T> slice(size_t start, size_t n) const {
+    ArrayView<T> slice(std::size_t start, std::size_t n) const {
         if (start <= _size) {
             return ArrayView(_data + start, std::min(n, _size - start));
         } else {
@@ -83,7 +83,7 @@ public:
 
 protected:
     T* _data;
-    size_t _size;
+    std::size_t _size;
 };
 
 } // namespace hvvr

@@ -12,6 +12,7 @@
 #include "util.h"
 
 #include <type_traits>
+#include <cstdlib>
 
 namespace hvvr {
 
@@ -32,7 +33,13 @@ public:
 
     explicit DynamicArray(size_t size) : DynamicArray(size, ALIGNOF(T)) {}
     explicit DynamicArray(size_t size, size_t alignment)
-        : _data(size ? (T*)_aligned_malloc(sizeof(T) * size, alignment) : nullptr), _size(size) {
+        : _data(size ?
+#ifdef _WIN32
+                     (T*)_aligned_malloc(sizeof(T) * size, alignment)
+#else
+                     (T*)aligned_alloc(sizeof(T) * size, alignment)
+#endif
+        : nullptr), _size(size) {
         if (!std::is_pod<T>::value)
             for (size_t i = 0; i < _size; ++i)
                 new (&_data[i]) T();
@@ -55,7 +62,11 @@ public:
             if (!std::is_pod<T>::value)
                 for (size_t i = 0; i < _size; ++i)
                     _data[i].~T();
+#ifdef _WIN32
             _aligned_free(_data);
+#else
+            free(_data);
+#endif
         }
     }
 

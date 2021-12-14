@@ -13,8 +13,12 @@
 #include "kernel_constants.h"
 #include "magic_constants.h"
 #include "memory_helpers.h"
+#ifdef _WIN32
 #include <cuda_d3d11_interop.h>
+#else
+#include <GL/gl.h>
 #include <cuda_gl_interop.h>
+#endif
 #include <functional>
 #include <random>
 
@@ -241,7 +245,7 @@ bool GPUCamera::bindTexture(GPUContext& gpuContext, ImageResourceDescriptor text
         cutilSafeCall(cudaGraphicsD3D11RegisterResource(&resultsResource, (ID3D11Texture2D*)texture.data,
                                                         cudaGraphicsRegisterFlagsNone));
 #else
-        assert(false, "Cannot do DirectX interop on non-windows platforms");
+//        cutilSafeCall(cudaGraphicsGLRegisterBuffer(&resultsResource, ));
 #endif
     } else if (texture.memoryType == ImageResourceDescriptor::MemoryType::OPENGL_TEXTURE) {
         cutilSafeCall(cudaGraphicsGLRegisterImage(&resultsResource, (GLuint)(uint64_t)texture.data, GL_TEXTURE_2D,
