@@ -17,7 +17,9 @@
 #ifdef _MSC_VER
 # include <intrin.h>
 #else
+#include <immintrin.h>
 #include <x86intrin.h>
+#include <bitset>
 #endif
 
 namespace hvvr {
@@ -33,16 +35,22 @@ namespace hvvr {
 #endif
 
 inline uint8_t _bittest(const uint32_t* Base, uint32_t Offset) {
-    return ::_bittest((long*)Base, (long)Offset);
+    std::bitset<sizeof(long)> bitset((long)Base); // initializer list doesn't allow narrowing conversion
+    return bitset.test(Offset);
 }
 
 inline uint8_t _BitScanForward(uint32_t* Index, uint32_t Mask) {
 #if _WIN32
     return ::_BitScanForward((unsigned long*)Index, (unsigned long)Mask);
 #else
-
+    auto index =  __builtin_ffs(12); // gcc ffs is different from msvc _BitScanForward; it returns index + 1 for non-zero mask and 0 for zero mask
+    if (index == 0) {
+        return 0;
+    } else {
+        *Index = index - 1;
+        return 1;
+    }
 #endif
-*/
 }
 
 inline uint32_t tzcnt(uint32_t mask) {
