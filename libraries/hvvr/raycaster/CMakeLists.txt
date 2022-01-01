@@ -1,7 +1,7 @@
 add_library(raycaster "")
 target_sources(raycaster
         PRIVATE
-        camera.cpp
+        camera.cu
         foveated.cpp
         frusta.cu
         gpu_camera.cu

@@ -17,7 +17,6 @@
 #ifdef _MSC_VER
 # include <intrin.h>
 #else
-#include <immintrin.h>
 #include <x86intrin.h>
 #include <bitset>
 #endif

@@ -12,6 +12,14 @@
 
 #include <stdint.h>
 
+struct Children {
+    char PADDING[4];
+    uint32_t offset[4];
+};
+
+struct Leaf {
+    uint32_t triIndex[5];
+};
 
 // A bounding volume hierarchy node, optimized for traversal.
 struct ALIGN(32) BVHNode {
@@ -23,13 +31,8 @@ struct ALIGN(32) BVHNode {
     struct ALIGN(32) BoxData {
         unsigned leafMask;
         union {
-            struct Children {
-                char PADDING[4];
-                uint32_t offset[4];
-            } children;
-            struct Leaf {
-                uint32_t triIndex[5];
-            } leaf;
+            Children children;
+            Leaf leaf;
         };
         char PADDING2[8];
     } boxData;

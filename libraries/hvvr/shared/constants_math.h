@@ -9,6 +9,7 @@
  */
 
 #include "util.h"
+#include "linux_support.h"
 
 namespace hvvr {
 

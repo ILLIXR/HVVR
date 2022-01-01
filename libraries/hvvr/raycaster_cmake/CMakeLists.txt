@@ -18,7 +18,7 @@ target_include_directories(raycaster PUBLIC
 target_sources(raycaster
         PRIVATE
         ../raycaster/linux_support.h
-        ../raycaster/camera.cpp
+        ../raycaster/camera.cu
         ../raycaster/foveated.cpp
         ../raycaster/frusta.cu
         ../raycaster/gpu_camera.cu

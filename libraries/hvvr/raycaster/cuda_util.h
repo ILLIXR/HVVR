@@ -13,6 +13,7 @@
 #include <cuda_runtime.h>
 #include <string>
 #include <vector>
+#include <array>
 
 // Very basic error handling
 #define cutilSafeCall(error) __cudaSafeCall(error, __FILE__, __LINE__)

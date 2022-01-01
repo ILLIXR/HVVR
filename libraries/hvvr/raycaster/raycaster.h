@@ -12,6 +12,7 @@
 #include "dynamic_array.h"
 #include "graphics_types.h"
 #include "raycaster_spec.h"
+#include "gpu_scene_state.h"
 
 #include <memory>
 #include <string>
