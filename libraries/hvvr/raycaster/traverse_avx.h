@@ -9,6 +9,7 @@
  */
 
 #include "vector_math.h"
+#include "linux_support.h"
 
 #include <immintrin.h>
 

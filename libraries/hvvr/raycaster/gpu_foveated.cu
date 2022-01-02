@@ -27,7 +27,7 @@ CUDA_DEVICE void writeSurface(vector4 val, Texture2D tex, unsigned int x, unsign
     if (PixelFormat == PixelFormat::RGBA32F) {
         surf2Dwrite(float4(val), tex.d_surfaceObject, x * sizeof(float4), y);
     } else if (PixelFormat == PixelFormat::RGBA16) {
-        surf2Dwrite(ToColor4Unorm16(val), tex.d_surfaceObject, x * sizeof(uint64_t), y);
+        surf2Dwrite<long long>(ToColor4Unorm16(val), tex.d_surfaceObject, x * sizeof(uint64_t), y);
     } else {
         surf2Dwrite(ToColor4Unorm8SRgb(val), tex.d_surfaceObject, x * sizeof(uchar4), y);
     }

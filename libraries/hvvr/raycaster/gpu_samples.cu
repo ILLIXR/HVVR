@@ -18,4 +18,26 @@ CameraBeams::CameraBeams(const GPUCamera& camera) {
     lens = camera.lens;
 }
 
+CUDA_DEVICE void GetSampleUVsDoF(uint32_t MSAARate,
+                                 uint32_t BlockSize,
+                                 const vector2* CUDA_RESTRICT tileSubsampleLensPos,
+                                 vector2 frameJitter,
+                                 vector2 focalToLensScale,
+                                 int subsample,
+                                 vector2& lensUV,
+                                 vector2& dirUV) {
+    // Random position on lens. As lensRadius approaches zero, depth of field rays become equivalent to
+    // non-depth of field rays, including AA subsample pattern.
+    int lensPosIndex =
+        (blockIdx.x % DOF_LENS_POS_LOOKUP_TABLE_TILES) * BlockSize * MSAARate + subsample * BlockSize + threadIdx.x;
+    // 1 LDG.64 (coherent, but half-efficiency)
+    lensUV = tileSubsampleLensPos[lensPosIndex];
+
+    // compile-time constant
+    vector2 aaOffset = getSubsampleUnitOffset(MSAARate, frameJitter, subsample);
+
+    // 2 FMA
+    dirUV = aaOffset * focalToLensScale - lensUV;
+}
+
 } // namespace hvvr

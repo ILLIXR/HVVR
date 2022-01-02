@@ -1,3 +1,4 @@
+#add_definitions(-w)
 add_library(raycaster "")
 
 set_target_properties(raycaster PROPERTIES LINKER_LANGUAGE CXX)

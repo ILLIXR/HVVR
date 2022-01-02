@@ -19,21 +19,21 @@ namespace hvvr {
 
 class GPUCamera;
 
-// From http://graphics.cs.williams.edu/papers/DeepGBuffer16/Mara2016DeepGBuffer.pdf
-static constexpr int tau[] = {
-    //  0   1   2   3   4   5   6   7   8   9
-    1,  1,  1,  2,  3,  2,  5,  2,  3,  2,   // 0
-    3,  3,  5,  5,  3,  4,  7,  5,  5,  7,   // 1
-    9,  8,  5,  5,  7,  7,  7,  8,  5,  8,   // 2
-    11, 12, 7,  10, 13, 8,  11, 8,  7,  14,  // 3
-    11, 11, 13, 12, 13, 19, 17, 13, 11, 18,  // 4
-    19, 11, 11, 14, 17, 21, 15, 16, 17, 18,  // 5
-    13, 17, 11, 17, 19, 18, 25, 18, 19, 19,  // 6
-    29, 21, 19, 27, 31, 29, 21, 18, 17, 29,  // 7
-    31, 31, 23, 18, 25, 26, 25, 23, 19, 34,  // 8
-    19, 27, 21, 25, 39, 29, 17, 21, 27, 29}; // 9
-template <uint32_t MSAARate>
-CUDA_HOST_DEVICE_INL vector2 tapLocation(int subsampleIndex, float spinAngle, float startOffset, float& radius) {
+CUDA_HOST_DEVICE_INL vector2 tapLocation(uint32_t MSAARate, int subsampleIndex, float spinAngle, float startOffset, float& radius) {
+    // From http://graphics.cs.williams.edu/papers/DeepGBuffer16/Mara2016DeepGBuffer.pdf
+    constexpr int tau[] = {
+        //  0   1   2   3   4   5   6   7   8   9
+        1,  1,  1,  2,  3,  2,  5,  2,  3,  2,   // 0
+        3,  3,  5,  5,  3,  4,  7,  5,  5,  7,   // 1
+        9,  8,  5,  5,  7,  7,  7,  8,  5,  8,   // 2
+        11, 12, 7,  10, 13, 8,  11, 8,  7,  14,  // 3
+        11, 11, 13, 12, 13, 19, 17, 13, 11, 18,  // 4
+        19, 11, 11, 14, 17, 21, 15, 16, 17, 18,  // 5
+        13, 17, 11, 17, 19, 18, 25, 18, 19, 19,  // 6
+        29, 21, 19, 27, 31, 29, 21, 18, 17, 29,  // 7
+        31, 31, 23, 18, 25, 26, 25, 23, 19, 34,  // 8
+        19, 27, 21, 25, 39, 29, 17, 21, 27, 29}; // 9
+
     const int numSpiralTurns = tau[MSAARate];
     // Radius relative to ssR
     float alpha = float(subsampleIndex + startOffset) * (1.0f / MSAARate);
@@ -43,8 +43,8 @@ CUDA_HOST_DEVICE_INL vector2 tapLocation(int subsampleIndex, float spinAngle, fl
     return vector2(cosf(angle), sinf(angle));
 }
 
-template <uint32_t MSAARate>
-CUDA_HOST_DEVICE_INL vector2 getSubsampleUnitOffset(vector2 sampleJitter,
+CUDA_HOST_DEVICE_INL vector2 getSubsampleUnitOffset(uint32_t MSAARate,
+                                                    vector2 sampleJitter,
                                                     int subsampleIndex,
                                                     float extraSpinAngle = 0.0f) {
     (void)sampleJitter;
@@ -55,7 +55,7 @@ CUDA_HOST_DEVICE_INL vector2 getSubsampleUnitOffset(vector2 sampleJitter,
     float startOffset = 0.5f;
 
     float radius;
-    vector2 unitDiskLoc = tapLocation<MSAARate>(subsampleIndex, spinAngle, startOffset, radius);
+    vector2 unitDiskLoc = tapLocation(MSAARate, subsampleIndex, spinAngle, startOffset, radius);
 
     return vector2(unitDiskLoc.x * radius, unitDiskLoc.y * radius);
 }
@@ -81,25 +81,13 @@ CUDA_DEVICE_INL DirectionalBeam GetDirectionalSample3D(uint32_t sampleIndex,
     return matrix3x3(cameraToWorld) * cameraBeams.directionalBeams[sampleIndex];
 }
 
-template <uint32_t MSAARate, uint32_t BlockSize>
-CUDA_DEVICE_INL void GetSampleUVsDoF(const vector2* CUDA_RESTRICT tileSubsampleLensPos,
-                                     vector2 frameJitter,
-                                     vector2 focalToLensScale,
-                                     int subsample,
-                                     vector2& lensUV,
-                                     vector2& dirUV) {
-    // Random position on lens. As lensRadius approaches zero, depth of field rays become equivalent to
-    // non-depth of field rays, including AA subsample pattern.
-    int lensPosIndex =
-        (blockIdx.x % DOF_LENS_POS_LOOKUP_TABLE_TILES) * BlockSize * MSAARate + subsample * BlockSize + threadIdx.x;
-    // 1 LDG.64 (coherent, but half-efficiency)
-    lensUV = tileSubsampleLensPos[lensPosIndex];
-
-    // compile-time constant
-    vector2 aaOffset = getSubsampleUnitOffset<MSAARate>(frameJitter, subsample);
-
-    // 2 FMA
-    dirUV = aaOffset * focalToLensScale - lensUV;
-}
+CUDA_DEVICE void GetSampleUVsDoF(uint32_t MSAARate,
+                                 uint32_t BlockSize,
+                                 const vector2* CUDA_RESTRICT tileSubsampleLensPos,
+                                 vector2 frameJitter,
+                                 vector2 focalToLensScale,
+                                 int subsample,
+                                 vector2& lensUV,
+                                 vector2& dirUV);
 
 } // namespace hvvr

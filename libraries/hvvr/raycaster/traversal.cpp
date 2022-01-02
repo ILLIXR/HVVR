@@ -19,6 +19,7 @@
 #include "timer.h"
 
 #include <stdio.h>
+#include <algorithm>
 
 // If enabled, compares the chosen traversal implementation (see TRAVERSAL_MODE) against TRAVERSAL_REF
 // and prints stats.

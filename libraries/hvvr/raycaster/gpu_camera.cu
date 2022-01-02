@@ -79,7 +79,7 @@ void GPUCamera::initLookupTables(int _MSAARate) {
 
             for (int subsample = 0; subsample < MSAARate; subsample++) {
                 vector2 pos =
-                    getSubsampleUnitOffset<MSAARate>(vector2(0.0f, 0.0f), (subsample * 7 + 7) % MSAARate, rotation);
+                    getSubsampleUnitOffset(MSAARate, vector2(0.0f, 0.0f), (subsample * 7 + 7) % MSAARate, rotation);
 
                 // tileSubsampleLensPosData[tile * TILE_SIZE * MSAARate + subsample * TILE_SIZE + sample].x =
                 //    uint32_t(floatToHalf(pos.x)) | (uint32_t(floatToHalf(pos.y)) << 16);

@@ -99,7 +99,7 @@ CUDA_DEVICE vector4 ShadeSSAA(ResolveSMem& sMem,
             if (EnableDoF) {
                 vector2 lensUV;
                 vector2 dirUV;
-                GetSampleUVsDoF<AARate, BlockSize>(tileSubsampleLensPos, frameJitter, sMem.tileDoF.focalToLensScale,
+                GetSampleUVsDoF(AARate, BlockSize, tileSubsampleLensPos, frameJitter, sMem.tileDoF.focalToLensScale,
                                                    subsampleIndex, lensUV, dirUV);
 
                 triThreadDoF.calcUVW(triTileDoF, lensCenterToFocalCenter, sMem.tileDoF.lensU, sMem.tileDoF.lensV,
@@ -114,7 +114,7 @@ CUDA_DEVICE vector4 ShadeSSAA(ResolveSMem& sMem,
                 triThreadDoF.calcUVW(triTileDoF, lensCenterToFocalCenter, sMem.tileDoF.lensU, sMem.tileDoF.lensV,
                                      lensUV, dirUV_dY, bOffY);
             } else {
-                vector2 alpha = getSubsampleUnitOffset<AARate>(frameJitter, subsampleIndex);
+                vector2 alpha = getSubsampleUnitOffset(AARate, frameJitter, subsampleIndex);
 
                 triThread.calcUVW(triTile, alpha, b);
 
@@ -212,11 +212,11 @@ CUDA_DEVICE vector4 ShadeMSAA(ResolveSMem& sMem,
         for (uint32_t centroidMask = sampleMask; centroidMask != 0;) {
             int subsampleIndex = __ffs(centroidMask) - 1;
             centroidMask &= ~(1 << subsampleIndex);
-            centroidAlpha += getSubsampleUnitOffset<AARate>(frameJitter, subsampleIndex) * sampleCountInv;
+            centroidAlpha += getSubsampleUnitOffset(AARate, frameJitter, subsampleIndex) * sampleCountInv;
 
             vector2 lensUV;
             vector2 dirUV;
-            GetSampleUVsDoF<AARate, BlockSize>(tileSubsampleLensPos, frameJitter, sMem.tileDoF.focalToLensScale,
+            GetSampleUVsDoF(AARate, BlockSize, tileSubsampleLensPos, frameJitter, sMem.tileDoF.focalToLensScale,
                                                subsampleIndex, lensUV, dirUV);
             centroidLensUV += lensUV * sampleCountInv;
             centroidDirUV += dirUV * sampleCountInv;
@@ -385,7 +385,7 @@ CUDA_KERNEL void ResolveKernel(uint32_t* sampleResults,
 
     if (TMaxBuffer) {
         enum { tMaxSubsampleIndex = 0 };
-        vector2 alpha = getSubsampleUnitOffset<AARate>(cameraBeams.frameJitter, tMaxSubsampleIndex);
+        vector2 alpha = getSubsampleUnitOffset(AARate, cameraBeams.frameJitter, tMaxSubsampleIndex);
 
         // scan through the compressed gbuffer until we find the subsample we care about
         enum : uint32_t { badTriIndex = ~uint32_t(0) };
@@ -417,7 +417,7 @@ CUDA_KERNEL void ResolveKernel(uint32_t* sampleResults,
                     // should lensUV be forced to zero (centered)?
                     vector2 lensUV;
                     vector2 dirUV;
-                    GetSampleUVsDoF<AARate, BlockSize>(tileSubsampleLensPos, cameraBeams.frameJitter,
+                    GetSampleUVsDoF(AARate, BlockSize, tileSubsampleLensPos, cameraBeams.frameJitter,
                                                        sMem.tileDoF.focalToLensScale, tMaxSubsampleIndex, lensUV,
                                                        dirUV);
 
