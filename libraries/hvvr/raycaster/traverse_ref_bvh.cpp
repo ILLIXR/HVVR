@@ -55,60 +55,62 @@ uint32_t traverseBlocks(BlockFrame& frame, const BVHNode* node, const Frustum& f
         if (!mask)
             goto POP;
 
-        uint32_t leaf = mask & node->boxData.leafMask;
-        if (leaf) {
-            mask &= ~leaf;
+        {
+            uint32_t leaf = mask & node->boxData.leafMask;
+            if (leaf) {
+                mask &= ~leaf;
 
-            // insert leaf nodes into the bottom of the stack
-            uint32_t slot = top++;
-            for (; slot > 0; slot--) {
-                if (frame.stack[slot - 1].tDelta <= 0) // is the next-lowest slot on the stack a leaf node?
-                    break;
-                frame.stack[slot] = frame.stack[slot - 1];
+                // insert leaf nodes into the bottom of the stack
+                uint32_t slot = top++;
+                for (; slot > 0; slot--) {
+                    if (frame.stack[slot - 1].tDelta <= 0) // is the next-lowest slot on the stack a leaf node?
+                        break;
+                    frame.stack[slot] = frame.stack[slot - 1];
+                }
+                frame.stack[slot].node = node;
+                frame.stack[slot].tDeltaBytes = leaf;
+                frame.stack[slot].tMinTemp = tMin;
             }
-            frame.stack[slot].node = node;
-            frame.stack[slot].tDeltaBytes = leaf;
-            frame.stack[slot].tMinTemp = tMin;
         }
 
         // mask is currently bitmask of which non-leaf children are hit by ray
         if (!mask)
             goto POP;
 
-        // conservative min ray bundle distance to children along the primary traversal axis
-        float childDist[childCount];
-        for (int c = 0; c < childCount; c++) {
-            childDist[c] = -((float*)((uintptr_t)node + frustum.distanceEstimateOffset))[c];
-        }
-
-        // size of children along the primary traversal axis
-        // assumes BVHNode stores float xMax[4] at a multiple of 32 bytes, immediately followed 16 bytes later by xNegMin[4]
-        // (and the same for y and z)
-        int maxOffset =
-            frustum.distanceEstimateOffset & ~16; // remove neg/pos sign choice from distanceEstimateOffset to get Max
-        int negMinOffset = maxOffset + 16;        // offset to get NegMin
-        float childSize[childCount];
-        for (int c = 0; c < childCount; c++) {
-            childSize[c] = 
-                ((float*)((uintptr_t)node + maxOffset))[c] +
-                ((float*)((uintptr_t)node + negMinOffset))[c];
-        }
-
-        // insert each child into the stack, sorting such that the top of the stack is the node
-        // with the largest dimensions along the primary traversal axis
-        for (int c = 0; c < childCount; c++) {
-            if ((mask & (1 << c)) == 0)
-                continue; // this child was culled
-
-            uint32_t slot = top++;
-            for (; slot > 0; slot--) {
-                if (frame.stack[slot - 1].tDelta <= childSize[c])
-                    break;
-                frame.stack[slot] = frame.stack[slot - 1];
+        {
+            // conservative min ray bundle distance to children along the primary traversal axis
+            float childDist[childCount];
+            for (int c = 0; c < childCount; c++) {
+                childDist[c] = -((float*)((uintptr_t)node + frustum.distanceEstimateOffset))[c];
             }
-            frame.stack[slot].node = node + node->boxData.children.offset[c];
-            frame.stack[slot].tDelta = childSize[c];
-            frame.stack[slot].tMinTemp = childDist[c];
+
+            // size of children along the primary traversal axis
+            // assumes BVHNode stores float xMax[4] at a multiple of 32 bytes, immediately followed 16 bytes later by xNegMin[4] (and the same for y and z)
+            int maxOffset = frustum.distanceEstimateOffset &
+                            ~16;               // remove neg/pos sign choice from distanceEstimateOffset to get Max
+            int negMinOffset = maxOffset + 16; // offset to get NegMin
+            float childSize[childCount];
+            for (int c = 0; c < childCount; c++) {
+                childSize[c] =
+                    ((float*)((uintptr_t)node + maxOffset))[c] + ((float*)((uintptr_t)node + negMinOffset))[c];
+            }
+
+            // insert each child into the stack, sorting such that the top of the stack is the node
+            // with the largest dimensions along the primary traversal axis
+            for (int c = 0; c < childCount; c++) {
+                if ((mask & (1 << c)) == 0)
+                    continue; // this child was culled
+
+                uint32_t slot = top++;
+                for (; slot > 0; slot--) {
+                    if (frame.stack[slot - 1].tDelta <= childSize[c])
+                        break;
+                    frame.stack[slot] = frame.stack[slot - 1];
+                }
+                frame.stack[slot].node = node + node->boxData.children.offset[c];
+                frame.stack[slot].tDelta = childSize[c];
+                frame.stack[slot].tMinTemp = childDist[c];
+            }
         }
 
 POP:
