@@ -9,7 +9,9 @@
 #define TRAVERSAL_IMP 1 // pull in any extra inline functions needed for traversal
 #include "traversal.h"
 
+#if TRAVERSAL_MODE == TRAVERSAL_AVX
 #include "avx.h"
+#endif
 #include "camera.h"
 #include "constants_math.h"
 #include "gpu_camera.h"

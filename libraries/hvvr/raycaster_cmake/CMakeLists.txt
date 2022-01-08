@@ -42,11 +42,11 @@ target_sources(raycaster
         ../raycaster/shading_helpers.h
         ../raycaster/texture.cu
         ../raycaster/traversal.cpp
-        ../raycaster/traverse_avx.cpp
+#        ../raycaster/traverse_avx.cpp
         ../raycaster/traverse_ref_bvh.cpp
         ../raycaster/traverse_ref_frustum.cpp
         ../shared/array_view.h
-        ../shared/avx.h
+#        ../shared/avx.h
         ../shared/bvh.cpp
         ../shared/bvh.h
         ../shared/constants_math.h
