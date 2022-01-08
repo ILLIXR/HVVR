@@ -7,49 +7,30 @@
  */
 
 #include "timer.h"
-
-#include <Windows.h>
+#include <chrono>
 
 namespace hvvr {
 
-static double timeScale = 0.0;
-
-class TimerInit {
-public:
-
-    TimerInit() {
-        LARGE_INTEGER frequency;
-        QueryPerformanceFrequency(&frequency);
-        timeScale = 1.0 / double(frequency.QuadPart);
-    }
-};
-static TimerInit timerInit;
-
 Timer::Timer() {
-    LARGE_INTEGER temp;
-    QueryPerformanceCounter(&temp);
-    startTime = uint64_t(temp.QuadPart);
-
+    startTime = getCurrentMicroseconds();
     lastTime = startTime;
 }
 
 double Timer::get() {
-    LARGE_INTEGER temp;
-    QueryPerformanceCounter(&temp);
-    uint64_t currentTime = uint64_t(temp.QuadPart);
-
-    double rval = (currentTime - lastTime) * timeScale;
+    uint64_t currentTime = getCurrentMicroseconds();
     lastTime = currentTime;
 
-    return rval;
+    return (double) (currentTime - lastTime);
 }
 
 double Timer::getElapsed() {
-    LARGE_INTEGER temp;
-    QueryPerformanceCounter(&temp);
-    uint64_t currentTime = uint64_t(temp.QuadPart);
+    uint64_t currentTime = getCurrentMicroseconds();
 
-    return (currentTime - startTime) * timeScale;
+    return (double ) (currentTime - startTime);
+}
+uint64_t Timer::getCurrentMicroseconds() {
+    return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::
+                                                                     now().time_since_epoch()).count();;
 }
 
 } // namespace hvvr

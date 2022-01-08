@@ -24,7 +24,7 @@ public:
     double getElapsed();
 
 private:
-
+    static uint64_t getCurrentMicroseconds();
     uint64_t startTime;
     uint64_t lastTime;
 };
