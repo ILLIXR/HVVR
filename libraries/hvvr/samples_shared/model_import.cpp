@@ -9,12 +9,12 @@
 #include "model_import.h"
 #include "raycaster.h"
 
-#include <string.h>
+#include <cstring>
 
 namespace model_import {
 
 bool compareExtension(const char* a, const char* b) {
-    if (_stricmp(a, b) == 0)
+    if (strcmp(a, b) == 0)
         return true;
     return false;
 }

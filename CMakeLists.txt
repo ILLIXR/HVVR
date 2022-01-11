@@ -10,3 +10,4 @@ find_package(GLEW REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 
 add_subdirectory(libraries/hvvr)
+add_subdirectory(projects)

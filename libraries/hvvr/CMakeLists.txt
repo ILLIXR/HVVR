@@ -1,1 +1,2 @@
 add_subdirectory(raycaster_cmake)
+add_subdirectory(samples_shared)
