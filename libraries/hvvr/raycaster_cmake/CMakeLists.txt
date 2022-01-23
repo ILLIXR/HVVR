@@ -1,17 +1,16 @@
 #add_definitions(-w)
 add_library(raycaster "")
 
-set_target_properties(raycaster PROPERTIES LINKER_LANGUAGE CXX)
+string(APPEND CMAKE_CUDA_FLAGS " -dc")
 
 target_link_libraries(raycaster OpenGL::GL)
-target_link_libraries(raycaster glfw)
-target_link_libraries(raycaster GLEW::GLEW)
 
 message(STATUS "OpenGL Include Dir: ${OPENGL_INCLUDE_DIR}")
 
 target_include_directories(raycaster PUBLIC
         "../raycaster"
         "../shared"
+        PRIVATE
         "${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}"
         "${OPENGL_INCLUDE_DIR}"
         )
