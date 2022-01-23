@@ -37,7 +37,7 @@ public:
 #ifdef _WIN32
                      (T*)_aligned_malloc(sizeof(T) * size, alignment)
 #else
-                     (T*)aligned_alloc(sizeof(T) * size, alignment)
+                     (T*)aligned_alloc(alignment, sizeof(T) * size)
 #endif
         : nullptr), _size(size) {
         if (!std::is_pod<T>::value)
