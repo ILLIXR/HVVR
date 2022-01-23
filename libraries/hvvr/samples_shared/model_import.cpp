@@ -10,6 +10,7 @@
 #include "raycaster.h"
 
 #include <cstring>
+#include <iostream>
 
 namespace model_import {
 
@@ -39,18 +40,21 @@ bool load(const char* path, Model& model) {
 }
 
 bool createObjects(hvvr::Raycaster& raycaster, Model& model) {
+    std::cout << "Loading texture" << std::endl;
     for (const Texture& texture : model.textures) {
         hvvr::Texture* object = raycaster.createTexture(texture.tex);
         if (object == nullptr)
             return false;
     }
 
+    std::cout << "Loading light source" << std::endl;
     for (const hvvr::LightUnion& light : model.lights) {
         hvvr::Light* object = raycaster.createLight(light);
         if (object == nullptr)
             return false;
     }
 
+    std::cout << "Loading mesh" << std::endl;
     for (const Mesh& mesh : model.meshes) {
         hvvr::Model* object = raycaster.createModel(mesh.data);
         if (object == nullptr)
@@ -59,6 +63,7 @@ bool createObjects(hvvr::Raycaster& raycaster, Model& model) {
         object->setTransform(mesh.transform);
     }
 
+    std::cout << "Model loaded in raycaster" << std::endl;
     return true;
 }
 
