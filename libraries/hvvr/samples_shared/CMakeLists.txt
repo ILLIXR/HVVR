@@ -1,6 +1,9 @@
 add_library(samples_shared "")
 
-target_include_directories(samples_shared PUBLIC ./)
+target_include_directories(samples_shared PUBLIC ./
+        PRIVATE
+        "${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}"
+        )
 target_sources(samples_shared PRIVATE
         model_import.cpp
         model_import_bin.cpp
