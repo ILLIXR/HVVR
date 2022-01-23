@@ -158,7 +158,7 @@ GApp::GApp(Settings settings) {
     auto resizeCallback = [this](int width, int height) {
         hvvr::ImageViewR8G8B8A8 image((uint32_t*)m_window->getRenderTargetTex(), width, height, width);
         hvvr::ImageResourceDescriptor renderTarget(image);
-        renderTarget.memoryType = hvvr::ImageResourceDescriptor::MemoryType::DX_TEXTURE;
+        renderTarget.memoryType = hvvr::ImageResourceDescriptor::MemoryType::OPENGL_TEXTURE;
 
         hvvr::DynamicArray<hvvr::Sample> samples = hvvr::getGridSamples(width, height);
 
