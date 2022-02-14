@@ -34,7 +34,7 @@ namespace hvvr {
 #endif
 
 inline uint8_t _bittest(const uint32_t* Base, uint32_t Offset) {
-    std::bitset<sizeof(long)> bitset((long)Base); // initializer list doesn't allow narrowing conversion
+    std::bitset<sizeof(uint32_t)> bitset(*Base); // initializer list doesn't allow narrowing conversion
     return bitset.test(Offset);
 }
 
