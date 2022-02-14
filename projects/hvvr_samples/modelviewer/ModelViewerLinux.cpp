@@ -253,6 +253,7 @@ void ModelViewerLinux::run() {
         onUserInput();
         onSimulation(m_prevElapsedTime, m_deltaTime);
         onRender();
+        // TODO: Steven, blit render texture to glfw window here
         endFrame();
     }
     onShutdown();
