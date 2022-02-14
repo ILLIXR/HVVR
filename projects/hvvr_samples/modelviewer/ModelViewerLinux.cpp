@@ -84,9 +84,16 @@ void ModelViewerLinux::onLoadScene(SceneSpecification spec) {
     }
 }
 void ModelViewerLinux::onAfterLoadScene() {
+    // Setup a regular camera
     m_camera = m_rayCaster->createCamera(hvvr::FloatRect(hvvr::vector2(-1, -1), hvvr::vector2(1, 1)),
                                          m_cameraSettings.lensRadius);
     m_camera->setFocalDepth(m_cameraSettings.focalDistance);
+
+    int width;
+    int height;
+    glfwGetWindowSize(m_window, &width, &height);
+
+    m_resizeCallback(width, height); // make sure we bind a render target and some samples to the camera
 }
 void ModelViewerLinux::endFrame() {
     // collect some overall perf statistics
@@ -139,7 +146,9 @@ void ModelViewerLinux::endFrame() {
 
     m_frameID++;
 }
-void ModelViewerLinux::setResizeCallback(std::function<void(int, int)> callback) {}
+void ModelViewerLinux::setResizeCallback(std::function<void(int, int)> callback) {
+    m_resizeCallback = callback;
+}
 
 void ModelViewerLinux::createGLWindow() {
     // Create window
