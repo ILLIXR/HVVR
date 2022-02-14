@@ -22,8 +22,25 @@ int main() {
 
 ModelViewerLinux::ModelViewerLinux(ModelViewerLinux::Settings settings) {
     m_settings = settings;
-
     createGLWindow();
+    createRenderTexture();
+
+    auto resizeCallback = [this](int width, int height) {
+        hvvr::ImageViewR8G8B8A8 image((uint32_t *) m_renderTexture, width, height, width);
+        hvvr::ImageResourceDescriptor renderTarget(image);
+        renderTarget.memoryType = hvvr::ImageResourceDescriptor::MemoryType::OPENGL_TEXTURE;
+
+        m_camera->setViewport(hvvr::FloatRect{{-(float) width / height, - 1}, {(float) width / height, 1}});
+        m_camera->setRenderTarget(renderTarget);
+
+        hvvr::DynamicArray<hvvr::Sample> samples = hvvr::getGridSamples(width, height);
+        m_camera->setSamples(samples.data(), uint32_t(samples.size()), 1);
+
+        if (ENABLE_WIDE_FOV) {
+            m_camera->setSphericalWarpSettings(210.0f, 130.0f);
+        }
+    };
+    setResizeCallback(resizeCallback);
 }
 void ModelViewerLinux::onInit() {
     RayCasterSpecification spec;
@@ -205,6 +222,26 @@ void ModelViewerLinux::createGLWindow() {
               << "Vender " << glGetString(GL_VENDOR) << std::endl
               << "Renderer " << glGetString(GL_RENDERER) << std::endl;
 }
+
+void ModelViewerLinux::createRenderTexture() {
+    // Create texture handle and bind the texture so we can set it up
+    glGenTextures(1, &m_renderTexture);
+    glBindTexture(GL_TEXTURE_2D, m_renderTexture);
+
+    // Set texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+    // HVVR needs an R8G8B8A8 texture
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, RT_WIDTH, RT_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+    // Unbind texture
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 void ModelViewerLinux::run() {
     while (!glfwWindowShouldClose(m_window)) {
         // Get + Handle user input events

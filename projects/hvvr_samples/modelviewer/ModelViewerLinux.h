@@ -29,6 +29,7 @@ public:
     };
     ModelViewerLinux(Settings settings);
     void createGLWindow();
+    void createRenderTexture();
     void onInit();
     void onShutdown();
     void onUserInput();
@@ -65,6 +66,9 @@ private:
     CameraControl m_cameraControl = {};
 
     CameraSettings m_cameraSettings;
+
+    // OpenGL render texture
+    GLuint m_renderTexture;
 };
 
 #endif // HVVR_MODELVIEWERLINUX_H
