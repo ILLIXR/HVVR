@@ -195,6 +195,15 @@ void ModelViewerLinux::createGLWindow() {
 
     // Setup viewport
     glViewport(0, 0, bufferWidth, bufferHeight);
+
+    // Always nice to check whether the context was properly created or not
+    int major, minor;
+    glGetIntegerv(GL_MAJOR_VERSION, &major);
+    glGetIntegerv(GL_MINOR_VERSION, &minor);
+    std::cout << "OpenGL context created" << std::endl
+              << "Version " << major << "." << minor << std::endl
+              << "Vender " << glGetString(GL_VENDOR) << std::endl
+              << "Renderer " << glGetString(GL_RENDERER) << std::endl;
 }
 void ModelViewerLinux::run() {
     while (!glfwWindowShouldClose(m_window)) {
