@@ -438,9 +438,6 @@ void Raycaster::intersectAndResolveBeamBatch(std::unique_ptr<Camera>& camera,
         rayHierarchy.blockFrusta = cHier._blockFrusta;
         rayHierarchy.tileFrusta = cHier._tileFrusta;
 
-        printf("blockFrustaSize = %d\n", cHier._blockFrusta.size());
-        printf("tileFrustaSize = %d\n", cHier._tileFrusta.size());
-
 #if DUMP_SCENE_AND_RAYS
         dumpSceneAndRays(gpuCamera, camera->getCameraToWorld(), _models);
 #endif
