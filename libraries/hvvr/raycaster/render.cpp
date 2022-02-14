@@ -434,15 +434,18 @@ void Raycaster::intersectAndResolveBeamBatch(std::unique_ptr<Camera>& camera,
                                         cHier._blockFrusta.data(), batchToWorld, uint32_t(batch.blockFrusta3D.size()),
                                         streamed, cullPlanes, *_threadPool.get());
 
-        RayHierarchy rayHierachy;
-        rayHierachy.blockFrusta = cHier._blockFrusta;
-        rayHierachy.tileFrusta = cHier._tileFrusta;
+        RayHierarchy rayHierarchy;
+        rayHierarchy.blockFrusta = cHier._blockFrusta;
+        rayHierarchy.tileFrusta = cHier._tileFrusta;
+
+        printf("blockFrustaSize = %d\n", cHier._blockFrusta.size());
+        printf("tileFrustaSize = %d\n", cHier._tileFrusta.size());
 
 #if DUMP_SCENE_AND_RAYS
         dumpSceneAndRays(gpuCamera, camera->getCameraToWorld(), _models);
 #endif
 
-        buildTileTriangleLists(rayHierachy, streamed);
+        buildTileTriangleLists(rayHierarchy, streamed);
 
         // end filling data for the GPU
     }
