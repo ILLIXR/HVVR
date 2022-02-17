@@ -8,7 +8,6 @@
 #include "ModelViewerConfig.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 #include <cuda_runtime.h>
 #include <functional>
 #include "timer.h"

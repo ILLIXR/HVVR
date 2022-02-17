@@ -4,17 +4,20 @@
 
 #include "ModelViewerLinux.h"
 #include "camera.h"
+#include "model_import.h"
 #include "samples.h"
 #include "vector_math.h"
-#include "model_import.h"
 #include <cstring>
 #include <iostream>
+#include <unistd.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
 int main() {
     setenv("DISPLAY", ":1", true);
     ModelViewerLinux::Settings settings;
     settings.initScene = gSceneSpecs[3];
-    ModelViewerLinux viewer{ settings };
+    ModelViewerLinux viewer{settings};
     viewer.onInit();
     viewer.run();
     return 0;
@@ -26,11 +29,11 @@ ModelViewerLinux::ModelViewerLinux(ModelViewerLinux::Settings settings) {
     createRenderTexture();
 
     auto resizeCallback = [this](int width, int height) {
-        hvvr::ImageViewR8G8B8A8 image((uint32_t *) m_renderTexture, width, height, width);
+        hvvr::ImageViewR8G8B8A8 image((uint32_t*)m_renderTexture, width, height, width);
         hvvr::ImageResourceDescriptor renderTarget(image);
         renderTarget.memoryType = hvvr::ImageResourceDescriptor::MemoryType::OPENGL_TEXTURE;
 
-        m_camera->setViewport(hvvr::FloatRect{{-(float) width / height, - 1}, {(float) width / height, 1}});
+        m_camera->setViewport(hvvr::FloatRect{{-(float)width / height, -1}, {(float)width / height, 1}});
         m_camera->setRenderTarget(renderTarget);
 
         hvvr::DynamicArray<hvvr::Sample> samples = hvvr::getGridSamples(width, height);
@@ -59,9 +62,7 @@ void ModelViewerLinux::onShutdown() {
 void ModelViewerLinux::onUserInput() {
     glfwPollEvents();
 }
-void ModelViewerLinux::onSimulation(double sceneTime, double deltaTime) {
-
-}
+void ModelViewerLinux::onSimulation(double sceneTime, double deltaTime) {}
 void ModelViewerLinux::onRender() {
     m_camera->setCameraToWorld(m_cameraControl.toTransform());
     m_rayCaster->render(m_prevElapsedTime);
@@ -109,6 +110,12 @@ void ModelViewerLinux::onAfterLoadScene() {
     int width;
     int height;
     glfwGetWindowSize(m_window, &width, &height);
+
+    glfwSetWindowUserPointer(m_window, this);
+    glfwSetWindowSizeCallback(this->m_window, [](GLFWwindow* window, int width, int height) {
+        auto self = static_cast<ModelViewerLinux*>(glfwGetWindowUserPointer(window));
+        self->m_resizeCallback(width, height);
+    });
 
     m_resizeCallback(width, height); // make sure we bind a render target and some samples to the camera
 }
@@ -193,7 +200,7 @@ void ModelViewerLinux::createGLWindow() {
     int bufferWidth, bufferHeight;
     glfwGetFramebufferSize(mainWindow, &bufferWidth, &bufferHeight);
 
-    // Set context for GLEW
+    // Set context for GLFW
     glfwMakeContextCurrent(mainWindow);
 
     // Allow extensions
@@ -253,7 +260,25 @@ void ModelViewerLinux::run() {
         onUserInput();
         onSimulation(m_prevElapsedTime, m_deltaTime);
         onRender();
-        // TODO: Steven, blit render texture to glfw window here
+
+        // blit texture onto the screen
+        GLuint fboId;
+        glGenFramebuffers(1, &fboId);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, fboId);
+        glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->m_renderTexture, 0);
+
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        int bufferWidth, bufferHeight;
+        glfwGetFramebufferSize(this->m_window, &bufferWidth, &bufferHeight);
+        glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT,
+                          GL_NEAREST);
+
+        glDeleteFramebuffers(1, &fboId);
+
+        this->m_cameraControl.pos.x += 0.01;
+
+        glfwSwapBuffers(this->m_window);
+
         endFrame();
     }
     onShutdown();
