@@ -8,9 +8,6 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glfw3 3 REQUIRED)
-find_package(CUDA REQUIRED)
-
-include_directories("${CUDA_INCLUDE_DIRS}")
 
 add_subdirectory(libraries/hvvr)
 add_subdirectory(projects)
