@@ -250,6 +250,8 @@ void ModelViewerLinux::createRenderTexture() {
 }
 
 void ModelViewerLinux::run() {
+    auto lastPrint = m_timer.getElapsed();
+    int frames = 0;
     while (!glfwWindowShouldClose(m_window)) {
         // Get + Handle user input events
         double elapsedTime = m_timer.getElapsed();
@@ -280,6 +282,13 @@ void ModelViewerLinux::run() {
         glfwSwapBuffers(this->m_window);
 
         endFrame();
+
+        frames++;
+        if (m_timer.getElapsed() - lastPrint >= 1000000) {
+            lastPrint = m_timer.getElapsed();
+            std::cout << "Frames: " << frames << std::endl;
+            frames = 0;
+        }
     }
     onShutdown();
 }

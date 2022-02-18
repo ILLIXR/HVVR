@@ -27,31 +27,32 @@ __forceinline __m128 loadu_m128(const float* p) { return _mm_load_ps(p); }
 __forceinline __m128 broadcast_m128(const float* p) { return _mm_broadcast_ss(p); }
 __forceinline void store(float* p, __m128 a) { _mm_store_ps(p, a); }
 __forceinline void storeu(float* p, __m128 a) { _mm_storeu_ps(p, a); }
-__forceinline float m128_get(const __m128& a, size_t i) { return a.m128_f32[i]; }
-__forceinline __m128 operator-(__m128 a) { return _mm_xor_ps(a, m128(-0.0f)); }
-__forceinline __m128 operator+(__m128 a, __m128 b) { return _mm_add_ps(a, b); }
-__forceinline __m128 operator-(__m128 a, __m128 b) { return _mm_sub_ps(a, b); }
-__forceinline __m128 operator*(__m128 a, __m128 b) { return _mm_mul_ps(a, b); }
-__forceinline __m128 operator/(__m128 a, __m128 b) { return _mm_div_ps(a, b); }
-__forceinline __m128 operator*(__m128 a, float b) { return a * m128(b); }
-__forceinline __m128 operator/(__m128 a, float b) { return a / m128(b); }
-__forceinline __m128 operator*(float a, __m128 b) { return m128(a) * b; }
-__forceinline __m128 operator/(float a, __m128 b) { return m128(a) / b; }
-__forceinline __m128 operator&(__m128 a, __m128 b) { return _mm_and_ps(a, b); }
-__forceinline __m128 operator|(__m128 a, __m128 b) { return _mm_or_ps(a, b); }
-__forceinline __m128 operator^(__m128 a, __m128 b) { return _mm_xor_ps(a, b); }
-__forceinline __m128 operator<(__m128 a, __m128 b) { return _mm_cmplt_ps(a, b); }
-__forceinline __m128 operator>(__m128 a, __m128 b) { return _mm_cmpgt_ps(a, b); }
-__forceinline __m128 operator<=(__m128 a, __m128 b) { return _mm_cmple_ps(a, b); }
-__forceinline __m128 operator>=(__m128 a, __m128 b) { return _mm_cmpge_ps(a, b); }
-__forceinline __m128 operator==(__m128 a, __m128 b) { return _mm_cmpeq_ps(a, b); }
-__forceinline __m128 operator!=(__m128 a, __m128 b) { return _mm_cmpneq_ps(a, b); }
-__forceinline __m128& operator+=(__m128& a, __m128 b) { return a = a + b; }
-__forceinline __m128& operator-=(__m128& a, __m128 b) { return a = a - b; }
-__forceinline __m128& operator*=(__m128& a, __m128 b) { return a = a * b; }
-__forceinline __m128& operator/=(__m128& a, __m128 b) { return a = a / b; }
-__forceinline __m128& operator*=(__m128& a, float b) { return a = a * b; }
-__forceinline __m128& operator/=(__m128& a, float b) { return a = a / b; }
+//__forceinline float m128_get(const __m128& a, size_t i) { return a.m128_f32[i]; }
+__forceinline float m128_get(const __m128& a, size_t i) { return a[i]; } // In GCC, direct indexing is used
+//__forceinline __m128 operator-(__m128 a) { return _mm_xor_ps(a, m128(-0.0f)); }
+//__forceinline __m128 operator+(__m128 a, __m128 b) { return _mm_add_ps(a, b); }
+//__forceinline __m128 operator-(__m128 a, __m128 b) { return _mm_sub_ps(a, b); }
+//__forceinline __m128 operator*(__m128 a, __m128 b) { return _mm_mul_ps(a, b); }
+//__forceinline __m128 operator/(__m128 a, __m128 b) { return _mm_div_ps(a, b); }
+//__forceinline __m128 operator*(__m128 a, float b) { return a * m128(b); }
+//__forceinline __m128 operator/(__m128 a, float b) { return a / m128(b); }
+//__forceinline __m128 operator*(float a, __m128 b) { return m128(a) * b; }
+//__forceinline __m128 operator/(float a, __m128 b) { return m128(a) / b; }
+//__forceinline __m128 operator&(__m128 a, __m128 b) { return _mm_and_ps(a, b); }
+//__forceinline __m128 operator|(__m128 a, __m128 b) { return _mm_or_ps(a, b); }
+//__forceinline __m128 operator^(__m128 a, __m128 b) { return _mm_xor_ps(a, b); }
+//__forceinline __m128 operator<(__m128 a, __m128 b) { return _mm_cmplt_ps(a, b); }
+//__forceinline __m128 operator>(__m128 a, __m128 b) { return _mm_cmpgt_ps(a, b); }
+//__forceinline __m128 operator<=(__m128 a, __m128 b) { return _mm_cmple_ps(a, b); }
+//__forceinline __m128 operator>=(__m128 a, __m128 b) { return _mm_cmpge_ps(a, b); }
+//__forceinline __m128 operator==(__m128 a, __m128 b) { return _mm_cmpeq_ps(a, b); }
+//__forceinline __m128 operator!=(__m128 a, __m128 b) { return _mm_cmpneq_ps(a, b); }
+//__forceinline __m128& operator+=(__m128& a, __m128 b) { return a = a + b; }
+//__forceinline __m128& operator-=(__m128& a, __m128 b) { return a = a - b; }
+//__forceinline __m128& operator*=(__m128& a, __m128 b) { return a = a * b; }
+//__forceinline __m128& operator/=(__m128& a, __m128 b) { return a = a / b; }
+//__forceinline __m128& operator*=(__m128& a, float b) { return a = a * b; }
+//__forceinline __m128& operator/=(__m128& a, float b) { return a = a / b; }
 #ifdef __AVX2__
 __forceinline __m128 fmadd(__m128 a, __m128 b, __m128 c) { return _mm_fmadd_ps(a, b, c); }
 __forceinline __m128 fmsub(__m128 a, __m128 b, __m128 c) { return _mm_fmsub_ps(a, b, c); }
@@ -115,34 +116,35 @@ __forceinline __m256 broadcast_m256(const float* p) { return _mm256_broadcast_ss
 __forceinline __m256 broadcast_m256(const __m128* p) { return _mm256_broadcast_ps(p); }
 __forceinline void store(float* p, __m256 a) { _mm256_store_ps(p, a); }
 __forceinline void storeu(float* p, __m256 a) { _mm256_storeu_ps(p, a); }
-__forceinline float m256_get(const __m256& a, size_t i) { return a.m256_f32[i]; }
-__forceinline __m256 operator-(__m256 a) { return _mm256_xor_ps(a, m256(-0.0f)); }
-__forceinline __m256 operator&(__m256 a, __m256 b) { return _mm256_and_ps(a, b); }
-__forceinline __m256 operator|(__m256 a, __m256 b) { return _mm256_or_ps(a, b); }
-__forceinline __m256 operator^(__m256 a, __m256 b) { return _mm256_xor_ps(a, b); }
-__forceinline __m256 operator+(__m256 a, __m256 b) { return _mm256_add_ps(a, b); }
-__forceinline __m256 operator-(__m256 a, __m256 b) { return _mm256_sub_ps(a, b); }
-__forceinline __m256 operator*(__m256 a, __m256 b) { return _mm256_mul_ps(a, b); }
-__forceinline __m256 operator/(__m256 a, __m256 b) { return _mm256_div_ps(a, b); }
-__forceinline __m256 operator*(__m256 a, float b) { return a * m256(b); }
-__forceinline __m256 operator/(__m256 a, float b) { return a / m256(b); }
-__forceinline __m256 operator*(float a, __m256 b) { return m256(a) * b; }
-__forceinline __m256 operator/(float a, __m256 b) { return m256(a) / b; }
-__forceinline __m256 operator<(__m256 a, __m256 b) { return _mm256_cmp_ps(a, b, _CMP_LT_OQ); }
-__forceinline __m256 operator>(__m256 a, __m256 b) { return _mm256_cmp_ps(a, b, _CMP_GT_OQ); }
-__forceinline __m256 operator<=(__m256 a, __m256 b) { return _mm256_cmp_ps(a, b, _CMP_LE_OQ); }
-__forceinline __m256 operator>=(__m256 a, __m256 b) { return _mm256_cmp_ps(a, b, _CMP_GE_OQ); }
-__forceinline __m256 operator==(__m256 a, __m256 b) { return _mm256_cmp_ps(a, b, _CMP_EQ_OQ); }
-__forceinline __m256 operator!=(__m256 a, __m256 b) { return _mm256_cmp_ps(a, b, _CMP_NEQ_OQ); }
-__forceinline __m256& operator&=(__m256& a, __m256 b) { return a = a & b; }
-__forceinline __m256& operator|=(__m256& a, __m256 b) { return a = a | b; }
-__forceinline __m256& operator^=(__m256& a, __m256 b) { return a = a ^ b; }
-__forceinline __m256& operator+=(__m256& a, __m256 b) { return a = a + b; }
-__forceinline __m256& operator-=(__m256& a, __m256 b) { return a = a - b; }
-__forceinline __m256& operator*=(__m256& a, __m256 b) { return a = a * b; }
-__forceinline __m256& operator/=(__m256& a, __m256 b) { return a = a / b; }
-__forceinline __m256& operator*=(__m256& a, float b) { return a = a * b; }
-__forceinline __m256& operator/=(__m256& a, float b) { return a = a / b; }
+//__forceinline float m256_get(const __m256& a, size_t i) { return a.m256_f32[i]; }
+__forceinline float m256_get(const __m256& a, size_t i) { return a[i]; } // In GCC, direct indexing is used
+//__forceinline __m256 operator-(__m256 a) { return _mm256_xor_ps(a, m256(-0.0f)); }
+//__forceinline __m256 operator&(__m256 a, __m256 b) { return _mm256_and_ps(a, b); }
+//__forceinline __m256 operator|(__m256 a, __m256 b) { return _mm256_or_ps(a, b); }
+//__forceinline __m256 operator^(__m256 a, __m256 b) { return _mm256_xor_ps(a, b); }
+//__forceinline __m256 operator+(__m256 a, __m256 b) { return _mm256_add_ps(a, b); }
+//__forceinline __m256 operator-(__m256 a, __m256 b) { return _mm256_sub_ps(a, b); }
+//__forceinline __m256 operator*(__m256 a, __m256 b) { return _mm256_mul_ps(a, b); }
+//__forceinline __m256 operator/(__m256 a, __m256 b) { return _mm256_div_ps(a, b); }
+//__forceinline __m256 operator*(__m256 a, float b) { return a * m256(b); }
+//__forceinline __m256 operator/(__m256 a, float b) { return a / m256(b); }
+//__forceinline __m256 operator*(float a, __m256 b) { return m256(a) * b; }
+//__forceinline __m256 operator/(float a, __m256 b) { return m256(a) / b; }
+//__forceinline __m256 operator<(__m256 a, __m256 b) { return _mm256_cmp_ps(a, b, _CMP_LT_OQ); }
+//__forceinline __m256 operator>(__m256 a, __m256 b) { return _mm256_cmp_ps(a, b, _CMP_GT_OQ); }
+//__forceinline __m256 operator<=(__m256 a, __m256 b) { return _mm256_cmp_ps(a, b, _CMP_LE_OQ); }
+//__forceinline __m256 operator>=(__m256 a, __m256 b) { return _mm256_cmp_ps(a, b, _CMP_GE_OQ); }
+//__forceinline __m256 operator==(__m256 a, __m256 b) { return _mm256_cmp_ps(a, b, _CMP_EQ_OQ); }
+//__forceinline __m256 operator!=(__m256 a, __m256 b) { return _mm256_cmp_ps(a, b, _CMP_NEQ_OQ); }
+//__forceinline __m256& operator&=(__m256& a, __m256 b) { return a = a & b; }
+//__forceinline __m256& operator|=(__m256& a, __m256 b) { return a = a | b; }
+//__forceinline __m256& operator^=(__m256& a, __m256 b) { return a = a ^ b; }
+//__forceinline __m256& operator+=(__m256& a, __m256 b) { return a = a + b; }
+//__forceinline __m256& operator-=(__m256& a, __m256 b) { return a = a - b; }
+//__forceinline __m256& operator*=(__m256& a, __m256 b) { return a = a * b; }
+//__forceinline __m256& operator/=(__m256& a, __m256 b) { return a = a / b; }
+//__forceinline __m256& operator*=(__m256& a, float b) { return a = a * b; }
+//__forceinline __m256& operator/=(__m256& a, float b) { return a = a / b; }
 #ifdef __AVX2__
 __forceinline __m256 fmadd(__m256 a, __m256 b, __m256 c) { return _mm256_fmadd_ps(a, b, c); }
 __forceinline __m256 fmsub(__m256 a, __m256 b, __m256 c) { return _mm256_fmsub_ps(a, b, c); }
@@ -198,34 +200,35 @@ __forceinline __m128d loadu_m128d(const double* p) { return _mm_load_pd(p); }
 __forceinline __m128d broadcast_m128d(const double* p) { return m128d(_mm256_broadcast_sd(p)); }
 __forceinline void store(double* p, __m128d a) { _mm_store_pd(p, a); }
 __forceinline void storeu(double* p, __m128d a) { _mm_storeu_pd(p, a); }
-__forceinline double m256d_get(const __m256d& a, size_t i) { return a.m256d_f64[i]; }
-__forceinline __m128d operator-(__m128d a) { return _mm_xor_pd(a, m128d(-0.0f)); }
-__forceinline __m128d operator&(__m128d a, __m128d b) { return _mm_and_pd(a, b); }
-__forceinline __m128d operator|(__m128d a, __m128d b) { return _mm_or_pd(a, b); }
-__forceinline __m128d operator^(__m128d a, __m128d b) { return _mm_xor_pd(a, b); }
-__forceinline __m128d operator+(__m128d a, __m128d b) { return _mm_add_pd(a, b); }
-__forceinline __m128d operator-(__m128d a, __m128d b) { return _mm_sub_pd(a, b); }
-__forceinline __m128d operator*(__m128d a, __m128d b) { return _mm_mul_pd(a, b); }
-__forceinline __m128d operator/(__m128d a, __m128d b) { return _mm_div_pd(a, b); }
-__forceinline __m128d operator*(__m128d a, double b) { return a * m128d(b); }
-__forceinline __m128d operator/(__m128d a, double b) { return a / m128d(b); }
-__forceinline __m128d operator*(double a, __m128d b) { return m128d(a) * b; }
-__forceinline __m128d operator/(double a, __m128d b) { return m128d(a) / b; }
-__forceinline __m128d operator<(__m128d a, __m128d b) { return _mm_cmplt_pd(a, b); }
-__forceinline __m128d operator>(__m128d a, __m128d b) { return _mm_cmpgt_pd(a, b); }
-__forceinline __m128d operator<=(__m128d a, __m128d b) { return _mm_cmple_pd(a, b); }
-__forceinline __m128d operator>=(__m128d a, __m128d b) { return _mm_cmpge_pd(a, b); }
-__forceinline __m128d operator==(__m128d a, __m128d b) { return _mm_cmpeq_pd(a, b); }
-__forceinline __m128d operator!=(__m128d a, __m128d b) { return _mm_cmpneq_pd(a, b); }
-__forceinline __m128d& operator&=(__m128d& a, __m128d b) { return a = a & b; }
-__forceinline __m128d& operator|=(__m128d& a, __m128d b) { return a = a | b; }
-__forceinline __m128d& operator^=(__m128d& a, __m128d b) { return a = a ^ b; }
-__forceinline __m128d& operator+=(__m128d& a, __m128d b) { return a = a + b; }
-__forceinline __m128d& operator-=(__m128d& a, __m128d b) { return a = a - b; }
-__forceinline __m128d& operator*=(__m128d& a, __m128d b) { return a = a * b; }
-__forceinline __m128d& operator/=(__m128d& a, __m128d b) { return a = a / b; }
-__forceinline __m128d& operator*=(__m128d& a, double b) { return a = a * b; }
-__forceinline __m128d& operator/=(__m128d& a, double b) { return a = a / b; }
+//__forceinline double m256d_get(const __m256d& a, size_t i) { return a.m256d_f64[i]; }
+__forceinline double m256d_get(const __m256d& a, size_t i) { return a[i]; } // In GCC, direct indexing is used
+//__forceinline __m128d operator-(__m128d a) { return _mm_xor_pd(a, m128d(-0.0f)); }
+//__forceinline __m128d operator&(__m128d a, __m128d b) { return _mm_and_pd(a, b); }
+//__forceinline __m128d operator|(__m128d a, __m128d b) { return _mm_or_pd(a, b); }
+//__forceinline __m128d operator^(__m128d a, __m128d b) { return _mm_xor_pd(a, b); }
+//__forceinline __m128d operator+(__m128d a, __m128d b) { return _mm_add_pd(a, b); }
+//__forceinline __m128d operator-(__m128d a, __m128d b) { return _mm_sub_pd(a, b); }
+//__forceinline __m128d operator*(__m128d a, __m128d b) { return _mm_mul_pd(a, b); }
+//__forceinline __m128d operator/(__m128d a, __m128d b) { return _mm_div_pd(a, b); }
+//__forceinline __m128d operator*(__m128d a, double b) { return a * m128d(b); }
+//__forceinline __m128d operator/(__m128d a, double b) { return a / m128d(b); }
+//__forceinline __m128d operator*(double a, __m128d b) { return m128d(a) * b; }
+//__forceinline __m128d operator/(double a, __m128d b) { return m128d(a) / b; }
+//__forceinline __m128d operator<(__m128d a, __m128d b) { return _mm_cmplt_pd(a, b); }
+//__forceinline __m128d operator>(__m128d a, __m128d b) { return _mm_cmpgt_pd(a, b); }
+//__forceinline __m128d operator<=(__m128d a, __m128d b) { return _mm_cmple_pd(a, b); }
+//__forceinline __m128d operator>=(__m128d a, __m128d b) { return _mm_cmpge_pd(a, b); }
+//__forceinline __m128d operator==(__m128d a, __m128d b) { return _mm_cmpeq_pd(a, b); }
+//__forceinline __m128d operator!=(__m128d a, __m128d b) { return _mm_cmpneq_pd(a, b); }
+//__forceinline __m128d& operator&=(__m128d& a, __m128d b) { return a = a & b; }
+//__forceinline __m128d& operator|=(__m128d& a, __m128d b) { return a = a | b; }
+//__forceinline __m128d& operator^=(__m128d& a, __m128d b) { return a = a ^ b; }
+//__forceinline __m128d& operator+=(__m128d& a, __m128d b) { return a = a + b; }
+//__forceinline __m128d& operator-=(__m128d& a, __m128d b) { return a = a - b; }
+//__forceinline __m128d& operator*=(__m128d& a, __m128d b) { return a = a * b; }
+//__forceinline __m128d& operator/=(__m128d& a, __m128d b) { return a = a / b; }
+//__forceinline __m128d& operator*=(__m128d& a, double b) { return a = a * b; }
+//__forceinline __m128d& operator/=(__m128d& a, double b) { return a = a / b; }
 __forceinline __m128d fmadd(__m128d a, __m128d b, __m128d c) { return _mm_fmadd_pd(a, b, c); }
 __forceinline __m128d fmsub(__m128d a, __m128d b, __m128d c) { return _mm_fmsub_pd(a, b, c); }
 __forceinline __m128d fnmadd(__m128d a, __m128d b, __m128d c) { return _mm_fnmadd_pd(a, b, c); }
@@ -236,14 +239,6 @@ __forceinline __m128d sqrt(__m128d a) { return _mm_sqrt_pd(a); }
 
 __forceinline unsigned movemask(__m128d a) { return (unsigned)_mm_movemask_pd(a); }
 
-template <unsigned i> __forceinline __m128d extract_m128d(__m256d a) {
-	static_assert(i < 2, "invalid index");
-	return _mm256_extractf128d_pd(a, i);
-}
-template <unsigned x, unsigned y> __forceinline __m128d shuffle(__m128d a) {
-	static_assert(x < 2 && y < 2, "invalid index");
-	return m128d(_mm_shuffle_epi32(_mm_castps_si128d(a), w * 64 + z * 16 + y * 4 + x));
-}
 template <unsigned x, unsigned y, unsigned z, unsigned w> __forceinline __m128d shuffle(__m128d a, __m128d b) {
 	static_assert(x < 4 && y < 4 && z < 4 && w < 4, "invalid index");
 	return _mm_shuffle_pd(a, w * 64 + z * 16 + y * 4 + x);
@@ -267,33 +262,33 @@ __forceinline __m256d broadcast_m256d(const double* p) { return _mm256_broadcast
 __forceinline __m256d broadcast_m256d(const __m128d* p) { return _mm256_broadcast_pd(p); }
 __forceinline void store(double* p, __m256d a) { _mm256_store_pd(p, a); }
 __forceinline void storeu(double* p, __m256d a) { _mm256_storeu_pd(p, a); }
-__forceinline __m256d operator-(__m256d a) { return _mm256_xor_pd(a, m256d(-0.0f)); }
-__forceinline __m256d operator&(__m256d a, __m256d b) { return _mm256_and_pd(a, b); }
-__forceinline __m256d operator|(__m256d a, __m256d b) { return _mm256_or_pd(a, b); }
-__forceinline __m256d operator^(__m256d a, __m256d b) { return _mm256_xor_pd(a, b); }
-__forceinline __m256d operator+(__m256d a, __m256d b) { return _mm256_add_pd(a, b); }
-__forceinline __m256d operator-(__m256d a, __m256d b) { return _mm256_sub_pd(a, b); }
-__forceinline __m256d operator*(__m256d a, __m256d b) { return _mm256_mul_pd(a, b); }
-__forceinline __m256d operator/(__m256d a, __m256d b) { return _mm256_div_pd(a, b); }
-__forceinline __m256d operator*(__m256d a, double b) { return a * m256d(b); }
-__forceinline __m256d operator/(__m256d a, double b) { return a / m256d(b); }
-__forceinline __m256d operator*(double a, __m256d b) { return m256d(a) * b; }
-__forceinline __m256d operator/(double a, __m256d b) { return m256d(a) / b; }
-__forceinline __m256d operator<(__m256d a, __m256d b) { return _mm256_cmp_pd(a, b, _CMP_LT_OQ); }
-__forceinline __m256d operator>(__m256d a, __m256d b) { return _mm256_cmp_pd(a, b, _CMP_GT_OQ); }
-__forceinline __m256d operator<=(__m256d a, __m256d b) { return _mm256_cmp_pd(a, b, _CMP_LE_OQ); }
-__forceinline __m256d operator>=(__m256d a, __m256d b) { return _mm256_cmp_pd(a, b, _CMP_GE_OQ); }
-__forceinline __m256d operator==(__m256d a, __m256d b) { return _mm256_cmp_pd(a, b, _CMP_EQ_OQ); }
-__forceinline __m256d operator!=(__m256d a, __m256d b) { return _mm256_cmp_pd(a, b, _CMP_NEQ_OQ); }
-__forceinline __m256d& operator&=(__m256d& a, __m256d b) { return a = a & b; }
-__forceinline __m256d& operator|=(__m256d& a, __m256d b) { return a = a | b; }
-__forceinline __m256d& operator^=(__m256d& a, __m256d b) { return a = a ^ b; }
-__forceinline __m256d& operator+=(__m256d& a, __m256d b) { return a = a + b; }
-__forceinline __m256d& operator-=(__m256d& a, __m256d b) { return a = a - b; }
-__forceinline __m256d& operator*=(__m256d& a, __m256d b) { return a = a * b; }
-__forceinline __m256d& operator/=(__m256d& a, __m256d b) { return a = a / b; }
-__forceinline __m256d& operator*=(__m256d& a, double b) { return a = a * b; }
-__forceinline __m256d& operator/=(__m256d& a, double b) { return a = a / b; }
+//__forceinline __m256d operator-(__m256d a) { return _mm256_xor_pd(a, m256d(-0.0f)); }
+//__forceinline __m256d operator&(__m256d a, __m256d b) { return _mm256_and_pd(a, b); }
+//__forceinline __m256d operator|(__m256d a, __m256d b) { return _mm256_or_pd(a, b); }
+//__forceinline __m256d operator^(__m256d a, __m256d b) { return _mm256_xor_pd(a, b); }
+//__forceinline __m256d operator+(__m256d a, __m256d b) { return _mm256_add_pd(a, b); }
+//__forceinline __m256d operator-(__m256d a, __m256d b) { return _mm256_sub_pd(a, b); }
+//__forceinline __m256d operator*(__m256d a, __m256d b) { return _mm256_mul_pd(a, b); }
+//__forceinline __m256d operator/(__m256d a, __m256d b) { return _mm256_div_pd(a, b); }
+//__forceinline __m256d operator*(__m256d a, double b) { return a * m256d(b); }
+//__forceinline __m256d operator/(__m256d a, double b) { return a / m256d(b); }
+//__forceinline __m256d operator*(double a, __m256d b) { return m256d(a) * b; }
+//__forceinline __m256d operator/(double a, __m256d b) { return m256d(a) / b; }
+//__forceinline __m256d operator<(__m256d a, __m256d b) { return _mm256_cmp_pd(a, b, _CMP_LT_OQ); }
+//__forceinline __m256d operator>(__m256d a, __m256d b) { return _mm256_cmp_pd(a, b, _CMP_GT_OQ); }
+//__forceinline __m256d operator<=(__m256d a, __m256d b) { return _mm256_cmp_pd(a, b, _CMP_LE_OQ); }
+//__forceinline __m256d operator>=(__m256d a, __m256d b) { return _mm256_cmp_pd(a, b, _CMP_GE_OQ); }
+//__forceinline __m256d operator==(__m256d a, __m256d b) { return _mm256_cmp_pd(a, b, _CMP_EQ_OQ); }
+//__forceinline __m256d operator!=(__m256d a, __m256d b) { return _mm256_cmp_pd(a, b, _CMP_NEQ_OQ); }
+//__forceinline __m256d& operator&=(__m256d& a, __m256d b) { return a = a & b; }
+//__forceinline __m256d& operator|=(__m256d& a, __m256d b) { return a = a | b; }
+//__forceinline __m256d& operator^=(__m256d& a, __m256d b) { return a = a ^ b; }
+//__forceinline __m256d& operator+=(__m256d& a, __m256d b) { return a = a + b; }
+//__forceinline __m256d& operator-=(__m256d& a, __m256d b) { return a = a - b; }
+//__forceinline __m256d& operator*=(__m256d& a, __m256d b) { return a = a * b; }
+//__forceinline __m256d& operator/=(__m256d& a, __m256d b) { return a = a / b; }
+//__forceinline __m256d& operator*=(__m256d& a, double b) { return a = a * b; }
+//__forceinline __m256d& operator/=(__m256d& a, double b) { return a = a / b; }
 __forceinline __m256d fmadd(__m256d a, __m256d b, __m256d c) { return _mm256_fmadd_pd(a, b, c); }
 __forceinline __m256d fmsub(__m256d a, __m256d b, __m256d c) { return _mm256_fmsub_pd(a, b, c); }
 __forceinline __m256d fnmadd(__m256d a, __m256d b, __m256d c) { return _mm256_fnmadd_pd(a, b, c); }

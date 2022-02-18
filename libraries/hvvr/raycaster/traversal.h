@@ -10,7 +10,7 @@
 
 #define TRAVERSAL_REF 1
 #define TRAVERSAL_AVX 2
-#define TRAVERSAL_MODE TRAVERSAL_REF
+#define TRAVERSAL_MODE TRAVERSAL_AVX
 
 #include "dynamic_array.h"
 #include "vector_math.h"

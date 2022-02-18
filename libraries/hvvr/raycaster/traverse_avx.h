@@ -92,7 +92,7 @@ struct Frustum {
 
 }}} // namespace hvvr::traverse::avx
 
-#if TRAVERSAL_IMP
+//#if TRAVERSAL_IMP
 
 #include "avx.h"
 #include "bvh_node.h"
@@ -529,4 +529,4 @@ TEST:
 
 }}} // namespace hvvr::traverse::avx
 
-#endif // TRAVERSAL_IMP
+//#endif // TRAVERSAL_IMP
