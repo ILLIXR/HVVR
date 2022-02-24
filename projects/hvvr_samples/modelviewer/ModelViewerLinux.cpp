@@ -9,7 +9,7 @@
 #include "vector_math.h"
 #include <cstring>
 #include <iostream>
-#include <unistd.h>
+
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
@@ -270,8 +270,15 @@ void ModelViewerLinux::run() {
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         int bufferWidth, bufferHeight;
         glfwGetFramebufferSize(this->m_window, &bufferWidth, &bufferHeight);
-        glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, GL_COLOR_BUFFER_BIT,
-                          GL_NEAREST);
+
+        // dump texture to image
+//        GLubyte* pixels = new GLubyte[bufferWidth * bufferHeight * 4];
+//        glReadPixels(0, 0, bufferWidth, bufferHeight, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+//        stbi_write_bmp("testout.bmp", bufferWidth, bufferHeight, 4, pixels);
+
+        //
+        glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, bufferHeight, bufferWidth, 0, GL_COLOR_BUFFER_BIT,
+                          GL_NEAREST); // OpenGL coordinate origin is bottom left vs top left for DirectX texture coordinates
 
         glDeleteFramebuffers(1, &fboId);
 
