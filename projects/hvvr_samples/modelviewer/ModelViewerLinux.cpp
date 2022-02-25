@@ -14,9 +14,8 @@
 #include "stb_image_write.h"
 
 int main() {
-    setenv("DISPLAY", ":1", true);
     ModelViewerLinux::Settings settings;
-    settings.initScene = gSceneSpecs[3];
+    settings.initScene = gSceneSpecs[gSceneSelect];
     ModelViewerLinux viewer{settings};
     viewer.onInit();
     viewer.run();
