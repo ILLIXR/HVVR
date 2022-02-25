@@ -7,6 +7,8 @@ target_link_libraries(raycaster OpenGL::GL)
 
 message(STATUS "OpenGL Include Dir: ${OPENGL_INCLUDE_DIR}")
 
+set_property(TARGET raycaster PROPERTY CUDA_ARCHITECTURES 60)
+
 target_include_directories(raycaster PUBLIC
         "../raycaster"
         "../shared"
@@ -58,6 +60,7 @@ target_sources(raycaster
         ../shared/timer.cpp
         ../shared/timer.h
         ../shared/util.h
+        ../shared/avx_util.h
         ../shared/util_graphics.h
         ../shared/vector_math.h
         )

@@ -3,6 +3,8 @@ add_executable(modelviewer "" ModelViewerConfig.h)
 target_link_libraries(raycaster glfw)
 target_link_libraries(raycaster GLEW::GLEW)
 
+set_property(TARGET modelviewer PROPERTY CUDA_ARCHITECTURES 60)
+
 target_include_directories(modelviewer PRIVATE
         "${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}"
         "${OPENGL_INCLUDE_DIR}"

@@ -29,7 +29,7 @@ double Timer::getElapsed() {
     return (double ) (currentTime - startTime);
 }
 uint64_t Timer::getCurrentMicroseconds() {
-    return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::
+    return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::
                                                                      now().time_since_epoch()).count();
 }
 

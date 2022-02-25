@@ -23,6 +23,8 @@
 
 #ifdef _MSC_VER
 #include <intrin.h> // _CountLeadingZeros
+#else
+#include <immintrin.h>
 #endif
 
 namespace hvvr {

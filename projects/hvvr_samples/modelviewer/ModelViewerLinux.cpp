@@ -256,7 +256,6 @@ void ModelViewerLinux::run() {
         // Get + Handle user input events
         double elapsedTime = m_timer.getElapsed();
         m_deltaTime = elapsedTime - m_prevElapsedTime;
-        m_deltaTime = elapsedTime - m_prevElapsedTime;
         m_prevElapsedTime = elapsedTime;
 
         onUserInput();

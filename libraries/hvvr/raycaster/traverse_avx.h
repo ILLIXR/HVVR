@@ -11,6 +11,7 @@
 #include "vector_math.h"
 #include "linux_support.h"
 
+#include "avx_util.h"
 #include <immintrin.h>
 
 struct BVHNode;
@@ -99,6 +100,7 @@ struct Frustum {
 #include "constants_math.h"
 
 #include <assert.h>
+#include <limits>
 
 namespace hvvr { namespace traverse { namespace avx {
 
@@ -128,19 +130,21 @@ __forceinline uint32_t Frustum::testBVHNodeChildren(const BVHNode& node) const {
         nDistSelect =
             _mm256_fmadd_ps(testPlane[1][0], aabbX, _mm256_fmadd_ps(testPlane[1][1], aabbY, testPlane[1][2] * aabbZ));
         d = m128(nDistSelect) + extract_m128<1>(nDistSelect);
-        test = test & (d <= m128(testPlane[1][3]));
+//        test = test & (d <= m128(testPlane[1][3]));
+        test = _mm_and_ps(test, (_mm_cmple_ps(d, m128(testPlane[1][3]))));
 
         // plane 2
         nDistSelect =
             _mm256_fmadd_ps(testPlane[2][0], aabbX, _mm256_fmadd_ps(testPlane[2][1], aabbY, testPlane[2][2] * aabbZ));
         d = m128(nDistSelect) + extract_m128<1>(nDistSelect);
-        test = test & (d <= m128(testPlane[2][3]));
+//        test = test & (d <= m128(testPlane[2][3]));
+        test = _mm_and_ps(test, (_mm_cmple_ps(d, m128(testPlane[2][3]))));
 
         // plane 3
         nDistSelect =
             _mm256_fmadd_ps(testPlane[3][0], aabbX, _mm256_fmadd_ps(testPlane[3][1], aabbY, testPlane[3][2] * aabbZ));
         d = m128(nDistSelect) + extract_m128<1>(nDistSelect);
-        test = test & (d <= m128(testPlane[3][3]));
+        test = _mm_and_ps(test, (_mm_cmple_ps(d, m128(testPlane[3][3]))));
 
         // mask off AABBs which are outside any of the planes
         unsigned int mask = movemask(test);
@@ -154,8 +158,9 @@ __forceinline uint32_t Frustum::testBVHNodeChildren(const BVHNode& node) const {
     // test frustum against AABB faces
     {
         // check for overlap of frustum's projection onto AABB axes
-        unsigned int mask =
-            movemask((aabbX >= testProjectionX) & (aabbY >= testProjectionY) & (aabbZ >= testProjectionZ));
+        unsigned int mask = movemask(_mm256_and_ps(_mm256_and_ps(_mm256_cmp_ps(aabbX, testProjectionX, _CMP_GE_OQ),
+                                                                 _mm256_cmp_ps(aabbY, testProjectionY, _CMP_GE_OQ)),
+                                                   _mm256_cmp_ps(aabbZ, testProjectionZ, _CMP_GE_OQ)));
         mask &= mask >> 4;
         // strip non-overlapping AABBs
         result &= mask;
@@ -202,7 +207,7 @@ __forceinline uint32_t Frustum::testBVHNodeChildrenRefine(const BVHNode& node,
                 __m256 minBox = _mm256_fmadd_ps(edgeX, nX, _mm256_fmadd_ps(edgeY, nY, edgeZ * nZ));
 
                 unsigned int mask =
-                    movemask((maxBox < testMinFrustum[edgeGroup]) | (testMaxFrustum[edgeGroup] < minBox));
+                    movemask(_mm256_or_ps((maxBox < testMinFrustum[edgeGroup]), (testMaxFrustum[edgeGroup] < minBox)));
                 // mask off any padding lanes
                 static_assert(edgeCount < 32, "assumes edgeCount < 32");
                 mask &= (1 << (edgeCount - edgeGroup * 8)) - 1;

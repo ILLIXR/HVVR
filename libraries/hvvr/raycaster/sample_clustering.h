@@ -17,11 +17,11 @@ namespace hvvr {
 
 template <class PointClass>
 void naiveXYCluster(ArrayView<PointClass> samples, size_t k) {
-    size_t yStrata = (size_t)sqrt(k);
+    size_t yStrata = (size_t)std::sqrt(k);
     size_t xStrata = (k + yStrata - 1) / yStrata;
 
     size_t tilesPerBlock = TILES_PER_BLOCK;
-    size_t blockYStrata = (size_t)sqrt(tilesPerBlock);
+    size_t blockYStrata = (size_t)std::sqrt(tilesPerBlock);
     size_t blockXStrata = (tilesPerBlock + blockYStrata - 1) / blockYStrata;
 
     auto yThenXComparator = [](const PointClass& a, const PointClass& b) {

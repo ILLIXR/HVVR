@@ -17,7 +17,6 @@
 #ifdef _MSC_VER
 # include <intrin.h>
 #else
-#include <x86intrin.h>
 #include <bitset>
 #endif
 
@@ -57,9 +56,6 @@ inline uint32_t tzcnt(uint32_t mask) {
     _BitScanForward(&index, mask);
     return index;
 }
-
-inline uint32_t clearLowestBit(uint32_t a) { return _blsr_u32(a); }
-inline uint64_t clearLowestBit(uint64_t a) { return _blsr_u64(a); }
 
 template <typename T> CHDI T min(T a, T b) { return a < b ? a : b; }
 template <typename T> CHDI T max(T a, T b) { return a > b ? a : b; }
