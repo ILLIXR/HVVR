@@ -1,5 +1,5 @@
 #add_definitions(-w)
-add_library(raycaster "")
+add_library(raycaster "" ../raycaster/traverse_avx_def.h)
 
 string(APPEND CMAKE_CUDA_FLAGS " -dc")
 

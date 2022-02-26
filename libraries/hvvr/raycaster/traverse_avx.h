@@ -11,9 +11,6 @@
 #include "vector_math.h"
 #include "linux_support.h"
 
-#include "avx_util.h"
-#include <immintrin.h>
-
 struct BVHNode;
 
 namespace hvvr { namespace traverse { namespace avx {
@@ -93,7 +90,7 @@ struct Frustum {
 
 }}} // namespace hvvr::traverse::avx
 
-//#if TRAVERSAL_IMP
+#if TRAVERSAL_IMP
 
 #include "avx.h"
 #include "bvh_node.h"
@@ -101,8 +98,12 @@ struct Frustum {
 
 #include <assert.h>
 #include <limits>
+#include <stdint.h>
 
 namespace hvvr { namespace traverse { namespace avx {
+
+uint32_t clearLowestBit(uint32_t a) { return _blsr_u32(a); }
+uint64_t clearLowestBit(uint64_t a) { return _blsr_u64(a); }
 
 __forceinline uint32_t Frustum::testBVHNodeChildren(const BVHNode& node) const {
     enum { childCount = 4 };
@@ -534,4 +535,4 @@ TEST:
 
 }}} // namespace hvvr::traverse::avx
 
-//#endif // TRAVERSAL_IMP
+#endif // TRAVERSAL_IMP

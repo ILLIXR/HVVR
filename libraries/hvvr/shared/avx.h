@@ -83,6 +83,10 @@ template <unsigned i> __forceinline __m128 extract_m128(__m256 a) {
     static_assert(i < 2, "invalid extract index");
     return _mm256_extractf128_ps(a, i);
 }
+template <unsigned x, unsigned y, unsigned z, unsigned w> __forceinline __m128 shuffle(__m128 a) {
+    static_assert(x < 4 && y < 4 && z < 4 && w < 4, "invalid shuffle index");
+    return m128(_mm_shuffle_epi32(_mm_castps_si128(a), w * 64 + z * 16 + y * 4 + x));
+}
 template <unsigned x, unsigned y, unsigned z, unsigned w> __forceinline __m128 shuffle(__m128 a, __m128 b) {
     static_assert(x < 4 && y < 4 && z < 4 && w < 4, "invalid shuffle index");
     return _mm_shuffle_ps(a, b, w * 64 + z * 16 + y * 4 + x);
@@ -235,15 +239,10 @@ __forceinline __m128d sqrt(__m128d a) { return _mm_sqrt_pd(a); }
 
 __forceinline unsigned movemask(__m128d a) { return (unsigned)_mm_movemask_pd(a); }
 
-template <unsigned x, unsigned y, unsigned z, unsigned w> __forceinline __m128 shuffle(__m128 a) {
-    static_assert(x < 4 && y < 4 && z < 4 && w < 4, "invalid shuffle index");
-    return m128(_mm_shuffle_epi32(_mm_castps_si128(a), w * 64 + z * 16 + y * 4 + x));
-}
-
-template <unsigned x, unsigned y, unsigned z, unsigned w> __forceinline __m128d shuffle(__m128d a, __m128d b) {
-	static_assert(x < 4 && y < 4 && z < 4 && w < 4, "invalid index");
-	return _mm_shuffle_pd(a, b, w * 64 + z * 16 + y * 4 + x);
-}
+//template <unsigned x, unsigned y, unsigned z, unsigned w> __forceinline __m128d shuffle(__m128d a, __m128d b) {
+//	static_assert(x < 4 && y < 4 && z < 4 && w < 4, "invalid index");
+//    return _mm_shuffle_pd(a, w * 64 + z * 16 + y * 4 + x);
+//}
 template <unsigned i> __forceinline __m128d broadcast(__m128d a) { return shuffle<i, i, i, i>(a); }
 __forceinline __m128d unpacklo(__m128d a, __m128d b) { return _mm_unpacklo_pd(a, b); }
 __forceinline __m128d unpackhi(__m128d a, __m128d b) { return _mm_unpackhi_pd(a, b); }
