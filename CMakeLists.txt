@@ -7,6 +7,7 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 #add_compile_options($<$<COMPILE_LANGUAGE:CUDA>:-v>)
 #add_compile_options($<$<COMPILE_LANGUAGE:CXX>:--verbose>)
+#add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-O0>)
 add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-mavx>)
 add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-mavx2>)
 add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-msse>)

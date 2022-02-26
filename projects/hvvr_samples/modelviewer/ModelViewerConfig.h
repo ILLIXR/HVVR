@@ -6,8 +6,8 @@
 #define HVVR_MODELVIEWERCONFIG_H
 
 #include "vector_math.h"
-#define RT_WIDTH 2160
-#define RT_HEIGHT 1200
+#define RT_WIDTH 1920
+#define RT_HEIGHT 1080
 
 // for foveated
 #define GAZE_CURSOR_MODE_NONE 0  // eye direction is locked forward

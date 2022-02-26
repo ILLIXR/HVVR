@@ -57,6 +57,7 @@ void ModelViewerLinux::onInit() {
 void ModelViewerLinux::onShutdown() {
     m_camera = nullptr;
     m_rayCaster = nullptr;
+    glDeleteFramebuffers(1, &m_textureFBO);
 }
 void ModelViewerLinux::onUserInput() {
     glfwPollEvents();
@@ -262,9 +263,8 @@ void ModelViewerLinux::run() {
         onRender();
 
         // blit texture onto the screen
-        GLuint fboId;
-        glGenFramebuffers(1, &fboId);
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, fboId);
+        glGenFramebuffers(1, &m_textureFBO);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_textureFBO);
         glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->m_renderTexture, 0);
 
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
@@ -280,7 +280,6 @@ void ModelViewerLinux::run() {
         glBlitFramebuffer(0, 0, bufferWidth, bufferHeight, 0, bufferHeight, bufferWidth, 0, GL_COLOR_BUFFER_BIT,
                           GL_NEAREST); // OpenGL coordinate origin is bottom left vs top left for DirectX texture coordinates
 
-        glDeleteFramebuffers(1, &fboId);
 
         this->m_cameraControl.pos.x += 0.01;
 
@@ -289,7 +288,7 @@ void ModelViewerLinux::run() {
         endFrame();
 
         frames++;
-        if (m_timer.getElapsed() - lastPrint >= 1000000) {
+        if (m_timer.getElapsed() - lastPrint >= 1) {
             lastPrint = m_timer.getElapsed();
             std::cout << "Frames: " << frames << std::endl;
             frames = 0;

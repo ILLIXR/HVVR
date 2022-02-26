@@ -68,6 +68,7 @@ private:
 
     // OpenGL render texture
     GLuint m_renderTexture;
+    GLuint m_textureFBO;
 };
 
 #endif // HVVR_MODELVIEWERLINUX_H
