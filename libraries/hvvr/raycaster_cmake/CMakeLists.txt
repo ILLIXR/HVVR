@@ -1,5 +1,5 @@
 #add_definitions(-w)
-add_library(raycaster "" ../raycaster/traverse_avx_def.h)
+add_library(raycaster "")
 
 string(APPEND CMAKE_CUDA_FLAGS " -dc")
 
@@ -7,7 +7,7 @@ target_link_libraries(raycaster OpenGL::GL)
 
 message(STATUS "OpenGL Include Dir: ${OPENGL_INCLUDE_DIR}")
 
-set_property(TARGET raycaster PROPERTY CUDA_ARCHITECTURES 60)
+set_property(TARGET raycaster PROPERTY CUDA_ARCHITECTURES 62)
 
 target_include_directories(raycaster PUBLIC
         "../raycaster"
@@ -60,7 +60,6 @@ target_sources(raycaster
         ../shared/timer.cpp
         ../shared/timer.h
         ../shared/util.h
-        ../shared/avx_util.h
         ../shared/util_graphics.h
         ../shared/vector_math.h
         )

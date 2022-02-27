@@ -20,7 +20,7 @@ public:
         std::string windowName = "Modelviewer";
         uint32_t width = RT_WIDTH;
         uint32_t height = RT_HEIGHT;
-        std::string sceneBasePath = "../../../scenes/";
+        std::string sceneBasePath = "./scenes/";
         // 0 = off, 1 = match monitor refresh, 2 = half monitor refresh
         int vSync = ENABLE_VSYNC;
         SceneSpecification initScene;
