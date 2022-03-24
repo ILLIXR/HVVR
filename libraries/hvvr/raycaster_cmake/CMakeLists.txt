@@ -1,8 +1,6 @@
 #add_definitions(-w)
 add_library(raycaster "")
 
-string(APPEND CMAKE_CUDA_FLAGS " -dc")
-
 target_link_libraries(raycaster OpenGL::GL)
 
 message(STATUS "OpenGL Include Dir: ${OPENGL_INCLUDE_DIR}")

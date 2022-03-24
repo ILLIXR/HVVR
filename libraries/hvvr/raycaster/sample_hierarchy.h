@@ -9,7 +9,7 @@
  */
 
 #include <limits>
-#include "gpu_samples.h"
+#include "gpu_samples.cuh"
 #include "graphics_types.h"
 #include "samples.h"
 #include "traversal.h"

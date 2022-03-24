@@ -12,7 +12,7 @@
 #include "foveated.h"
 #include "gpu_buffer.h"
 #include "gpu_image.h"
-#include "gpu_samples.h"
+#include "gpu_samples.cuh"
 #include "raycaster_spec.h"
 #include "samples.h"
 #include "texture_internal.h"

@@ -8,7 +8,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-#include "gpu_samples.h"
+#include "gpu_samples.cuh"
 #include "graphics_types.h"
 #include "vector_math.h"
 

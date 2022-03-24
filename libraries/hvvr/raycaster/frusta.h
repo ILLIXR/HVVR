@@ -10,7 +10,7 @@
 
 #include "gpu_buffer.h"
 #include "gpu_camera.h"
-#include "gpu_samples.h"
+#include "gpu_samples.cuh"
 #include "vector_math.h"
 
 

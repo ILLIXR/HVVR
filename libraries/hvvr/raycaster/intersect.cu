@@ -140,7 +140,7 @@ CUDA_DEVICE void IntersectSamples(const PrecomputedTriangleIntersect* CUDA_RESTR
             for (int i = 0; i < AARate; ++i) {
                 vector2 lensUV;
                 vector2 dirUV;
-                GetSampleUVsDoF(AARate, BlockSize, tileSubsampleLensPos, cameraBeams.frameJitter,
+                GetSampleUVsDoF<AARate, BlockSize>(tileSubsampleLensPos, cameraBeams.frameJitter,
                                                    triCache.tileDoF.focalToLensScale, i, lensUV, dirUV);
 
                 if (triThreadDoF.test(triTileDoF, lensCenterToFocalCenter, triCache.tileDoF.lensU,
@@ -156,7 +156,7 @@ CUDA_DEVICE void IntersectSamples(const PrecomputedTriangleIntersect* CUDA_RESTR
 
 #pragma unroll
             for (int i = 0; i < AARate; ++i) {
-                vector2 alpha = getSubsampleUnitOffset(AARate, cameraBeams.frameJitter, i);
+                vector2 alpha = getSubsampleUnitOffset<AARate>(cameraBeams.frameJitter, i);
 
                 if (triThread.test(triTile, alpha, sampleTMax[i])) {
                     // ray intersected triangle and passed depth test, sampleTMax[i] has been updated
@@ -425,7 +425,7 @@ CUDA_KERNEL void DumpRaysKernel(SimpleRay* rayBuffer,
         DirectionalBeam sample3D = GetDirectionalSample3D(sampleOffset, cameraBeams, cameraToWorld);
 
         for (int i = 0; i < AARate; ++i) {
-            vector2 alpha = getSubsampleUnitOffset(AARate, cameraBeams.frameJitter, i);
+            vector2 alpha = getSubsampleUnitOffset<AARate>(cameraBeams.frameJitter, i);
             vector3 dir = normalize(sample3D.centerRay + sample3D.du * alpha.x + sample3D.dv * alpha.y);
             vector3 pos = vector3(cameraToWorld.m3);
             if (cameraBeams.lens.radius > 0.0f) {

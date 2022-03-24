@@ -12,7 +12,7 @@
 #include "frusta.h"
 #include "gpu_camera.h"
 #include "gpu_context.h"
-#include "gpu_samples.h"
+#include "gpu_samples.cuh"
 #include "graphics_types.h"
 #include "kernel_constants.h"
 #include "memory_helpers.h"

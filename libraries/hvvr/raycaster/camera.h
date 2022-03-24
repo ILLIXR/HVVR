@@ -10,7 +10,7 @@
 
 #include "dynamic_array.h"
 #include "foveated.h"
-#include "gpu_samples.h"
+#include "gpu_samples.cuh"
 #include "graphics_types.h"
 #include "sample_hierarchy.h"
 #include "samples.h"

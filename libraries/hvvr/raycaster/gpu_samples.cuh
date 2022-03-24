@@ -10,6 +10,7 @@
 
 #include "constants_math.h"
 #include "cuda_decl.h"
+#include "device_launch_parameters.h"
 #include "kernel_constants.h"
 #include "samples.h"
 #include "vector_math.h"
@@ -19,7 +20,8 @@ namespace hvvr {
 
 class GPUCamera;
 
-CUDA_HOST_DEVICE_INL vector2 tapLocation(uint32_t MSAARate, int subsampleIndex, float spinAngle, float startOffset, float& radius) {
+template <uint32_t MSAARate>
+CUDA_HOST_DEVICE_INL vector2 tapLocation(int subsampleIndex, float spinAngle, float startOffset, float& radius) {
     // From http://graphics.cs.williams.edu/papers/DeepGBuffer16/Mara2016DeepGBuffer.pdf
     constexpr int tau[] = {
         //  0   1   2   3   4   5   6   7   8   9
@@ -43,8 +45,8 @@ CUDA_HOST_DEVICE_INL vector2 tapLocation(uint32_t MSAARate, int subsampleIndex, 
     return vector2(cosf(angle), sinf(angle));
 }
 
-CUDA_HOST_DEVICE_INL vector2 getSubsampleUnitOffset(uint32_t MSAARate,
-                                                    vector2 sampleJitter,
+template <uint32_t MSAARate>
+CUDA_HOST_DEVICE_INL vector2 getSubsampleUnitOffset(vector2 sampleJitter,
                                                     int subsampleIndex,
                                                     float extraSpinAngle = 0.0f) {
     (void)sampleJitter;
@@ -55,7 +57,7 @@ CUDA_HOST_DEVICE_INL vector2 getSubsampleUnitOffset(uint32_t MSAARate,
     float startOffset = 0.5f;
 
     float radius;
-    vector2 unitDiskLoc = tapLocation(MSAARate, subsampleIndex, spinAngle, startOffset, radius);
+    vector2 unitDiskLoc = tapLocation<MSAARate>(subsampleIndex, spinAngle, startOffset, radius);
 
     return vector2(unitDiskLoc.x * radius, unitDiskLoc.y * radius);
 }
@@ -81,13 +83,25 @@ CUDA_DEVICE_INL DirectionalBeam GetDirectionalSample3D(uint32_t sampleIndex,
     return matrix3x3(cameraToWorld) * cameraBeams.directionalBeams[sampleIndex];
 }
 
-CUDA_DEVICE void GetSampleUVsDoF(uint32_t MSAARate,
-                                 uint32_t BlockSize,
-                                 const vector2* CUDA_RESTRICT tileSubsampleLensPos,
-                                 vector2 frameJitter,
-                                 vector2 focalToLensScale,
-                                 int subsample,
-                                 vector2& lensUV,
-                                 vector2& dirUV);
+template <uint32_t MSAARate, uint32_t BlockSize>
+CUDA_DEVICE_INL void GetSampleUVsDoF(const vector2* CUDA_RESTRICT tileSubsampleLensPos,
+                                     vector2 frameJitter,
+                                     vector2 focalToLensScale,
+                                     int subsample,
+                                     vector2& lensUV,
+                                     vector2& dirUV) {
+    // Random position on lens. As lensRadius approaches zero, depth of field rays become equivalent to
+    // non-depth of field rays, including AA subsample pattern.
+    int lensPosIndex =
+        (blockIdx.x % DOF_LENS_POS_LOOKUP_TABLE_TILES) * BlockSize * MSAARate + subsample * BlockSize + threadIdx.x;
+    // 1 LDG.64 (coherent, but half-efficiency)
+    lensUV = tileSubsampleLensPos[lensPosIndex];
+
+    // compile-time constant
+    vector2 aaOffset = getSubsampleUnitOffset<MSAARate>(frameJitter, subsample);
+
+    // 2 FMA
+    dirUV = aaOffset * focalToLensScale - lensUV;
+}
 
 } // namespace hvvr
