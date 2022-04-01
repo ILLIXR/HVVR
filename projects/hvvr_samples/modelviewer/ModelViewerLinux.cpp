@@ -84,7 +84,7 @@ void ModelViewerLinux::onLoadScene(SceneSpecification spec) {
     m_rayCaster->createLight(light);
 
     // load the scene
-    std::cout << "Import model" << std::endl;
+    std::cout << "Import model " << scenePath.c_str() << std::endl;
     model_import::Model importedModel;
     if (!model_import::load(scenePath.c_str(), importedModel)) {
         hvvr::fail("failed to load model %s", scenePath.c_str());

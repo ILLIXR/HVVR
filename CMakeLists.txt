@@ -14,6 +14,7 @@ add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-msse>)
 add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-msse2>)
 add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-mfma>)
 add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-mbmi>)
+add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-mf16c>)
 
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)

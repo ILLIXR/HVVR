@@ -476,10 +476,10 @@ uint32_t importTexture(ImportState& state, FbxFileTexture* pFileTexture, bool sR
     tex.format = sRGB ? hvvr::TextureFormat::r8g8b8a8_unorm_srgb : hvvr::TextureFormat::r8g8b8a8_unorm;
     tex.width = width;
     tex.height = height;
-    tex.stride = width;
+    tex.strideElements = width;
 
     uint32_t texIndex = uint32_t(state.model.textures.size());
-    state.model.textures.emplace_back(std::move(tex));
+    state.model.textures.emplace_back(tex);
     state.textureLookup[path] = texIndex;
 
     return texIndex;

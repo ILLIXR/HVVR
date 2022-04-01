@@ -15,7 +15,7 @@
 
 #include <vector>
 
-#define MODEL_IMPORT_ENABLE_FBX 0
+//#define MODEL_IMPORT_ENABLE_FBX 1
 
 namespace hvvr {
 class Raycaster;
