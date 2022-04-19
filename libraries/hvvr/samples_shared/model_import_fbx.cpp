@@ -32,6 +32,7 @@
 #include <vector>
 
 #include <fbxsdk.h>
+#include <iostream>
 #ifdef _DEBUG
 # pragma comment(lib, "debug/libfbxsdk-md.lib")
 #else
@@ -463,6 +464,8 @@ uint32_t importTexture(ImportState& state, FbxFileTexture* pFileTexture, bool sR
     int width, height, channelsIn;
     uint8_t* data = stbi_load(path, &width, &height, &channelsIn, channelsOut);
     if (data == nullptr) {
+        if(stbi_failure_reason())
+            std::cout << stbi_failure_reason() << std::endl;
         printf("error: stb_image couldn't load %s\n", path);
         return hvvr::SimpleMaterial::badTextureIndex;
     }

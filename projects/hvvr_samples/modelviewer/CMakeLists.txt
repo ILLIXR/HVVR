@@ -17,10 +17,6 @@ set_target_properties(modelviewer PROPERTIES
 target_link_libraries(modelviewer PRIVATE samples_shared)
 target_link_libraries(modelviewer PRIVATE raycaster)
 
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/sponza.bin)
-FILE(COPY sponza.bin DESTINATION "${CMAKE_BINARY_DIR}/projects/hvvr_samples/modelviewer/scenes")
-endif()
-
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/sponza.fbx)
-    FILE(COPY sponza.fbx DESTINATION "${CMAKE_BINARY_DIR}/projects/hvvr_samples/modelviewer/scenes")
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/scenes/)
+FILE(COPY scenes/ DESTINATION "${CMAKE_BINARY_DIR}/projects/hvvr_samples/modelviewer/scenes")
 endif()
